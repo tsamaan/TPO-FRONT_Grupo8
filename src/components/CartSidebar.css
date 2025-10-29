@@ -135,7 +135,7 @@
 
 .cart-buy-btn {
   width: 100%;
-  background: #ff2e7a;
+  background: #b63939;
   color: #fff;
   font-size: 1.1rem;
   font-weight: 600;
@@ -149,7 +149,7 @@
 }
 
 .cart-buy-btn:hover {
-  background: #e91e63;
+  background: #c0392b;
 }
 
 .cart-close-btn {

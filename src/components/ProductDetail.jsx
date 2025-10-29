@@ -28,7 +28,7 @@ const ProductDetail = () => {
   const [cantidad, setCantidad] = useState(1);
   const [added, setAdded] = useState(false);
 
-  const { addToCart } = useCart();
+  const { addToCart, cart } = useCart();
 
   useEffect(() => {
     setLoading(true);
@@ -65,14 +65,34 @@ const ProductDetail = () => {
   const precioOriginal = precio ? (precio / (1 - descuento)).toFixed(2) : null;
   const precioCuota = precio ? (precio / cuotas).toFixed(2) : null;
 
-  const handleCantidad = (e) => {
-    let val = parseInt(e.target.value, 10);
+
+  // Calcular cantidad ya agregada al carrito de este producto
+  const cantidadEnCarrito = cart.find(item => item.id === product?.id)?.quantity || 0;
+  const stockDisponible = stock - cantidadEnCarrito;
+
+  const handleCantidad = (val) => {
     if (isNaN(val) || val < 1) val = 1;
-    if (val > stock) val = stock;
+    if (val > stockDisponible) val = stockDisponible;
     setCantidad(val);
   };
 
+  const handleDecrease = () => {
+    if (cantidad > 1) {
+      setCantidad(cantidad - 1);
+    }
+  };
+
+  const handleIncrease = () => {
+    if (cantidad < stockDisponible) {
+      setCantidad(cantidad + 1);
+    }
+  };
+
   const handleAddCart = () => {
+    if (cantidad > stockDisponible) {
+      alert('No puedes agregar más productos de los que hay en stock disponible');
+      return;
+    }
     // Armar el objeto producto con los campos que espera el carrito
     const productoParaCarrito = {
       id: product.id,
@@ -122,21 +142,25 @@ const ProductDetail = () => {
         </div>
         <div className="product-detail-haversack-cantidad">
           <span>Cantidad</span>
-          <input
-            type="number"
-            min={1}
-            max={stock}
-            value={cantidad}
-            onChange={handleCantidad}
-            className="product-detail-haversack-cantidad-input"
-          />
+          <div className="cart-item-controls">
+            <button onClick={handleDecrease} disabled={cantidad <= 1}>-</button>
+            <span>{cantidad}</span>
+            <button onClick={handleIncrease} disabled={cantidad >= stockDisponible}>+</button>
+          </div>
+          <div className="product-detail-haversack-stockinfo">
+            Stock disponible: {stockDisponible}
+            {cantidadEnCarrito > 0 && (
+              <span> (ya agregaste {cantidadEnCarrito} al carrito)</span>
+            )}
+          </div>
         </div>
         <button
           className="product-detail-haversack-addcart"
           onClick={handleAddCart}
-          disabled={stock < 1}
+          disabled={stockDisponible < 1}
+          style={stockDisponible < 1 ? { background: '#ccc', color: '#666', cursor: 'not-allowed' } : {}}
         >
-          {added ? '¡AGREGADO!' : 'AGREGAR AL CARRITO'}
+          {stockDisponible < 1 ? 'NO HAY STOCK' : (added ? '¡AGREGADO!' : 'AGREGAR AL CARRITO')}
         </button>
         <div className="product-detail-haversack-description">
           <b>{nombre}</b>: {descripcion}

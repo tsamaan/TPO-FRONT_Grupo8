@@ -6,7 +6,7 @@ import { Autoplay } from 'swiper/modules';
 import './BannerSwiper.css';
 
 const BannerSwiper = ({ promos }) => (
-  <div className="banner-swiper">
+  <main className="banner-swiper">
     <Swiper
       modules={[Autoplay]}
       autoplay={{ delay: 3500, disableOnInteraction: false }}
@@ -21,7 +21,7 @@ const BannerSwiper = ({ promos }) => (
         </SwiperSlide>
       ))}
     </Swiper>
-  </div>
+  </main>
 );
 
 export default BannerSwiper;

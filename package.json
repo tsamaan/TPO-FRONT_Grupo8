@@ -8,8 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "json-server --watch db-1758054449795.json --static ./public --port 3001",
-    "server:dev": "json-server --watch db-1758054449795.json --static ./public --port 3001",
+    "server": "json-server --watch src/data/data.json --static ./public --port 3001",
+    "server:dev": "json-server --watch src/data/data.json --static ./public --port 3001",
     "server:legacy": "node server/index.js"
   },
   "dependencies": {

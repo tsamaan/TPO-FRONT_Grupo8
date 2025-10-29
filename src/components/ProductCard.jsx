@@ -29,17 +29,7 @@ const ProductCard = ({ product, inCart, onAdd, onRemove }) => {
           </div>
         )}
         <div className="product-card-price">${product.price.toLocaleString('es-AR')}</div>
-        <div className="product-card-actions">
-          {!inCart ? (
-            <button className="add-btn" onClick={() => onAdd(product)}>
-              Agregar al carrito
-            </button>
-          ) : (
-            <button className="remove-btn" onClick={() => onRemove(product.id)}>
-              Eliminar del carrito
-            </button>
-          )}
-        </div>
+        
       </div>
     </div>
   );

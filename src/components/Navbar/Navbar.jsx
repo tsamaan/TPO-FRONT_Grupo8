@@ -1,10 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import { AuthContext } from '../../context/AuthContext'
 import { Link, NavLink } from 'react-router-dom'
 import CategorySidebar from '../CategorySidebar'
 import './Navbar.css'
 
 const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { isAuthenticated, user, setIsAuthenticated, setUser } = useContext(AuthContext)
+
+  const handleLogout = () => {
+    setIsAuthenticated(false)
+    setUser(null)
+  }
 
   return (
     <aside className="navbar">
@@ -32,18 +39,31 @@ const Navbar = () => {
           <NavLink to="/contacto" className="navbar__link">
             Contacto
           </NavLink>
+          {isAuthenticated && (
+            <NavLink to="/admin" className="navbar__link">
+              Admin
+            </NavLink>
+          )}
         </nav>
       </div>
 
       <div className="navbar__bottom">
         <p className="navbar__social">INSTAGRAM</p>
         <div className="navbar__actions">
-          <Link to="/registro" className="navbar__action">
-            CREAR CUENTA
-          </Link>
-          <Link to="/login" className="navbar__action">
-            INGRESAR
-          </Link>
+          {isAuthenticated ? (
+            <button className="navbar__action" onClick={handleLogout}>
+              CERRAR SESIÓN
+            </button>
+          ) : (
+            <>
+              <Link to="/registro" className="navbar__action">
+                CREAR CUENTA
+              </Link>
+              <Link to="/login" className="navbar__action">
+                INGRESAR
+              </Link>
+            </>
+          )}
         </div>
       </div>
 
