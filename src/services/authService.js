@@ -1,9 +1,9 @@
 
-const API_BASE_URL = 'http://localhost:8080'
+import config from './config.js'
 
 export async function loginService(email, password) {
   try {
-    const response = await fetch(`${API_BASE_URL}/users?email=${email}&password=${password}`)
+    const response = await fetch(`${config.API_BASE_URL}/users?email=${email}&password=${password}`)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
@@ -25,7 +25,7 @@ export async function loginService(email, password) {
 export async function registerService(data) {
   try {
     // Verificar si ya existe el email
-    const emailCheck = await fetch(`${API_BASE_URL}/users?email=${data.email}`)
+    const emailCheck = await fetch(`${config.API_BASE_URL}/users?email=${data.email}`)
     const existingEmailUsers = await emailCheck.json()
 
     if (existingEmailUsers.length > 0) {
@@ -33,7 +33,7 @@ export async function registerService(data) {
     }
 
     // Verificar si ya existe el usuario
-    const userCheck = await fetch(`${API_BASE_URL}/users?usuario=${data.usuario}`)
+    const userCheck = await fetch(`${config.API_BASE_URL}/users?usuario=${data.usuario}`)
     const existingUsers = await userCheck.json()
 
     if (existingUsers.length > 0) {
@@ -41,7 +41,7 @@ export async function registerService(data) {
     }
 
     // Crear nuevo usuario
-    const response = await fetch(`${API_BASE_URL}/users`, {
+    const response = await fetch(`${config.API_BASE_URL}/users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

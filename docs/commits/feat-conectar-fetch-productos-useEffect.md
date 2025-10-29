@@ -22,8 +22,8 @@ const API_BASE_URL = 'http://localhost:3001'
 export const fetchProducts = async (category = null) => {
   try {
     const url = category
-      ? `${API_BASE_URL}/products?category=${category}`
-      : `${API_BASE_URL}/products`
+      ? `${config.API_BASE_URL}/products?category=${category}`
+      : `${config.API_BASE_URL}/products`
 
     const response = await fetch(url)
     if (!response.ok) {
@@ -39,7 +39,7 @@ export const fetchProducts = async (category = null) => {
 
 export const fetchProductById = async (id) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/products/${id}`)
+    const response = await fetch(`${config.API_BASE_URL}/products/${id}`)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
