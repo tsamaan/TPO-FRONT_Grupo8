@@ -1,6 +1,8 @@
+import config from './config'
+
 export const createOrder = async (orderData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/orders`, {
+    const response = await fetch(`${config.API_BASE_URL}/orders`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -19,7 +21,7 @@ export const createOrder = async (orderData) => {
 // Eliminar producto del carrito
 export const deleteCartItem = async (id) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/cart/${id}`, {
+    const response = await fetch(`${config.API_BASE_URL}/cart/${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) {
@@ -31,11 +33,12 @@ export const deleteCartItem = async (id) => {
     throw error;
   }
 }
-const API_BASE_URL = 'http://localhost:3001'
+
+
 
 export const getProductById = async (id) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/products/${id}`);
+    const response = await fetch(`${config.API_BASE_URL}/products/${id}`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -50,8 +53,8 @@ export const getProductById = async (id) => {
 export const fetchProducts = async (category = null) => {
   try {
     const url = category
-      ? `${API_BASE_URL}/products?category=${category}`
-      : `${API_BASE_URL}/products`
+      ? `${config.API_BASE_URL}/products?category=${category}`
+      : `${config.API_BASE_URL}/products`
 
     const response = await fetch(url)
     if (!response.ok) {
@@ -68,7 +71,7 @@ export const fetchProducts = async (category = null) => {
 
 export const fetchProductById = async (id) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/products/${id}`)
+    const response = await fetch(`${config.API_BASE_URL}/products/${id}`)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
@@ -83,7 +86,7 @@ export const fetchProductById = async (id) => {
 
 export const createProduct = async (productData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/products`, {
+    const response = await fetch(`${config.API_BASE_URL}/products`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -105,7 +108,7 @@ export const createProduct = async (productData) => {
 
 export const updateProduct = async (id, productData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+    const response = await fetch(`${config.API_BASE_URL}/products/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -127,7 +130,7 @@ export const updateProduct = async (id, productData) => {
 
 export const deleteProduct = async (id) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+    const response = await fetch(`${config.API_BASE_URL}/products/${id}`, {
       method: 'DELETE',
     })
 
@@ -144,7 +147,7 @@ export const deleteProduct = async (id) => {
 
 export const fetchUsers = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/users`)
+    const response = await fetch(`${config.API_BASE_URL}/users`)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
@@ -160,8 +163,8 @@ export const fetchUsers = async () => {
 export const fetchCart = async (userId = null) => {
   try {
     const url = userId
-      ? `${API_BASE_URL}/cart?userId=${userId}`
-      : `${API_BASE_URL}/cart`
+      ? `${config.API_BASE_URL}/cart?userId=${userId}`
+      : `${config.API_BASE_URL}/cart`
 
     const response = await fetch(url)
     if (!response.ok) {
@@ -178,7 +181,7 @@ export const fetchCart = async (userId = null) => {
 
 export const createCartItem = async (cartData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/cart`, {
+    const response = await fetch(`${config.API_BASE_URL}/cart`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
