@@ -31,7 +31,13 @@ export const deleteCartItem = async (id) => {
     throw error;
   }
 }
-const API_BASE_URL = 'http://localhost:3001'
+const API_BASE_URL = 'http://localhost:8080/api'
+
+// Helper para obtener el token del localStorage
+const getAuthHeader = () => {
+  const token = localStorage.getItem('token');
+  return token ? { 'Authorization': `Bearer ${token}` } : {};
+};
 
 export const getProductById = async (id) => {
   try {
@@ -87,6 +93,7 @@ export const createProduct = async (productData) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...getAuthHeader(),
       },
       body: JSON.stringify(productData),
     })
