@@ -1,14 +1,27 @@
-import { useState, useEffect } from 'react';
-import { fetchProducts, deleteProduct } from '../services/api';
+import { useState, useEffect, useContext } from 'react';
+import { fetchProducts, deleteProduct, registerAdmin } from '../services/api';
+import { AuthContext } from '../context/AuthContext';
 import AddProductForm from '../components/AddProductForm';
 import EditProductForm from '../components/EditProductForm';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
+  const { user, isSuperAdmin, logout } = useContext(AuthContext);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [showRegisterAdmin, setShowRegisterAdmin] = useState(false);
+  const [adminFormData, setAdminFormData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    name: '',
+    phone: '',
+    address: ''
+  });
+  const [adminError, setAdminError] = useState('');
+  const [adminSuccess, setAdminSuccess] = useState('');
 
   const loadProducts = async () => {
     try {
@@ -54,6 +67,43 @@ const AdminDashboard = () => {
     loadProducts();
   };
 
+  const handleAdminFormChange = (e) => {
+    setAdminFormData({
+      ...adminFormData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleRegisterAdmin = async (e) => {
+    e.preventDefault();
+    setAdminError('');
+    setAdminSuccess('');
+
+    if (adminFormData.password !== adminFormData.confirmPassword) {
+      setAdminError('Las contraseñas no coinciden');
+      return;
+    }
+
+    try {
+      await registerAdmin(adminFormData);
+      setAdminSuccess('Admin registrado exitosamente');
+      setAdminFormData({
+        email: '',
+        password: '',
+        confirmPassword: '',
+        name: '',
+        phone: '',
+        address: ''
+      });
+      setTimeout(() => {
+        setShowRegisterAdmin(false);
+        setAdminSuccess('');
+      }, 2000);
+    } catch (err) {
+      setAdminError(err.message || 'Error al registrar admin');
+    }
+  };
+
   if (loading) {
     return <div className="admin-dashboard__feedback">Cargando...</div>;
   }
@@ -64,7 +114,106 @@ const AdminDashboard = () => {
 
   return (
     <main className="admin-dashboard">
-      <h1>Panel de Administración</h1>
+      <div className="admin-dashboard-header">
+        <div>
+          <h1>Panel de Administración</h1>
+          <p className="admin-welcome">Bienvenido, {user?.name || user?.email}</p>
+        </div>
+        <div className="admin-actions">
+          {isSuperAdmin() && (
+            <button 
+              onClick={() => setShowRegisterAdmin(!showRegisterAdmin)} 
+              className="btn btn--primary"
+            >
+              {showRegisterAdmin ? 'Ocultar' : 'Registrar Admin'}
+            </button>
+          )}
+          <button onClick={logout} className="btn btn--logout">Cerrar Sesión</button>
+        </div>
+      </div>
+
+      {isSuperAdmin() && showRegisterAdmin && (
+        <div className="register-admin-section">
+          <h2>Registrar Nuevo Admin</h2>
+          <form onSubmit={handleRegisterAdmin} className="admin-form">
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="name">Nombre Completo</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={adminFormData.name}
+                  onChange={handleAdminFormChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={adminFormData.email}
+                  onChange={handleAdminFormChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="password">Contraseña</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={adminFormData.password}
+                  onChange={handleAdminFormChange}
+                  required
+                  minLength="6"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="confirmPassword">Confirmar Contraseña</label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={adminFormData.confirmPassword}
+                  onChange={handleAdminFormChange}
+                  required
+                  minLength="6"
+                />
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="phone">Teléfono (opcional)</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={adminFormData.phone}
+                  onChange={handleAdminFormChange}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="address">Dirección (opcional)</label>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  value={adminFormData.address}
+                  onChange={handleAdminFormChange}
+                />
+              </div>
+            </div>
+            {adminError && <div className="admin-form-error">{adminError}</div>}
+            {adminSuccess && <div className="admin-form-success">{adminSuccess}</div>}
+            <button type="submit" className="btn btn--submit">Registrar Admin</button>
+          </form>
+        </div>
+      )}
 
       {editingProduct ? (
         <EditProductForm

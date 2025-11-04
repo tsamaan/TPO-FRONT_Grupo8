@@ -2,10 +2,11 @@ import { useContext, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
 import AdminDashboard from './pages/AdminDashboard';
+import UserDashboard from './pages/UserDashboard';
 import Navbar from './components/Navbar/Navbar';
 import CartWidget from './components/Carrito/CartWidget';
 import CartSidebar from './components/CartSidebar';
@@ -29,14 +30,13 @@ function ProtectedScreen({ onLogout, user }) {
 }
 
 function MainApp() {
-  const { isAuthenticated, user, setIsAuthenticated, setUser } = useContext(AuthContext)
+  const { isAuthenticated, user, setIsAuthenticated, setUser, logout } = useContext(AuthContext)
   const [cartOpen, setCartOpen] = useState(false)
   const [filterOpen, setFilterOpen] = useState(false)
   const [productCount, setProductCount] = useState(0)
 
   const handleLogout = () => {
-    setIsAuthenticated(false)
-    setUser(null)
+    logout();
   }
 
   const handleCartClick = () => setCartOpen(true)
@@ -93,7 +93,7 @@ function MainRoutes(props) {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/registro" element={<RegisterPage />} />
+      <Route path="/registro" element={<LoginPage />} />
       <Route
         path="*"
         element={
@@ -107,13 +107,19 @@ function MainRoutes(props) {
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route
+                  path="/perfil"
+                  element={
+                    <ProtectedRoute>
+                      <UserDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
                   path="/admin"
                   element={
-                    isAuthenticated ? (
+                    <ProtectedRoute requiredRole="ADMIN">
                       <AdminDashboard />
-                    ) : (
-                      <Navigate to="/login" replace />
-                    )
+                    </ProtectedRoute>
                   }
                 />
                 <Route path="/productos" element={<ProductsPage filterOpen={filterOpen} onFilterClose={handleFilterClose} onProductCountChange={handleProductCountChange} />} />

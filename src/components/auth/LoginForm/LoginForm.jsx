@@ -1,16 +1,31 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from "../../../context/AuthContext";
 import "./LoginForm.css";
 
 const LoginForm = ({ onShowRegister }) => {
-	const { login, error, isAuthenticated } = useContext(AuthContext);
+	const { login, error, isAuthenticated, user } = useContext(AuthContext);
+	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		login(email, password);
+		await login(email, password);
 	};
+
+	// Redirigir según el rol después del login
+	useEffect(() => {
+		if (isAuthenticated && user) {
+			const userRole = user.role || user.roles?.[0];
+			
+			if (userRole === 'ADMIN' || userRole === 'SUPER_ADMIN') {
+				navigate('/admin');
+			} else {
+				navigate('/perfil');
+			}
+		}
+	}, [isAuthenticated, user, navigate]);
 
 	return (
 		<div className="login-form-wrapper">
@@ -50,7 +65,6 @@ const LoginForm = ({ onShowRegister }) => {
 					<button type="button" className="login-form-link" onClick={onShowRegister}>Registrate</button>
 				</div>
 				{error && <div className="login-form-error">{error}</div>}
-				{isAuthenticated && <div className="login-form-success">¡Bienvenido a Haversack!</div>}
 			</form>
 		</div>
 	);

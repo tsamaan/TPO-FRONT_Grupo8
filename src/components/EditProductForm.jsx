@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { updateProduct } from '../services/api';
-import './EditProductForm.css';
+import './AddProductForm.css'; // Usando estilos compartidos
 
 const EditProductForm = ({ product: productToEdit, onProductUpdated, onCancel }) => {
   const [product, setProduct] = useState(productToEdit);

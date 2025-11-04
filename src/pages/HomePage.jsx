@@ -2,7 +2,7 @@ import React from 'react';
 import ProductList from '../components/ProductList';
 import ImageCarousel from '../components/ImageCarousel';
 import BannerSwiper from '../components/BannerSwiper';
-import MosaicCategory from '../components/MosaicCategory';
+// import MosaicCategory from '../components/MosaicCategory'; // Archivo eliminado en merge
 import './HomePage.css';
 
 const images = [
@@ -21,7 +21,7 @@ const HomePage = () => {
         
         <BannerSwiper promos={promos} />
         <ImageCarousel images={images} />
-        <MosaicCategory />
+        {/* <MosaicCategory /> */}
         <section className="products-section">
           <div className="products-header">
             <h2>Productos destacados</h2>

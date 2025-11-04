@@ -1,3 +1,60 @@
+// Configuración base de la API
+const API_BASE_URL = 'http://localhost:8080/api'
+
+// Helper para obtener el token del localStorage
+const getAuthHeader = () => {
+  const token = localStorage.getItem('token');
+  return token ? { 'Authorization': `Bearer ${token}` } : {};
+};
+
+// PRODUCTOS
+export const fetchProducts = async (category = null) => {
+  try {
+    const url = category
+      ? `${API_BASE_URL}/products?category=${category}`
+      : `${API_BASE_URL}/products`
+
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const products = await response.json()
+    return Array.isArray(products) ? products : []
+  } catch (error) {
+    console.error('Error fetching products:', error)
+    throw error
+  }
+}
+
+export const fetchProductById = async (id) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/products/${id}`)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    const product = await response.json()
+    return product
+  } catch (error) {
+    console.error('Error fetching product:', error)
+    throw error
+  }
+}
+
+export const getProductById = async (id) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/products/${id}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const product = await response.json();
+    return product;
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    throw error;
+  }
+};
+
 export const createOrder = async (orderData) => {
   try {
     const response = await fetch(`${API_BASE_URL}/orders`, {
@@ -29,61 +86,6 @@ export const deleteCartItem = async (id) => {
   } catch (error) {
     console.error('Error deleting cart item:', error);
     throw error;
-  }
-}
-const API_BASE_URL = 'http://localhost:8080/api'
-
-// Helper para obtener el token del localStorage
-const getAuthHeader = () => {
-  const token = localStorage.getItem('token');
-  return token ? { 'Authorization': `Bearer ${token}` } : {};
-};
-
-export const getProductById = async (id) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/products/${id}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const product = await response.json();
-    return product;
-  } catch (error) {
-    console.error('Error fetching product:', error);
-    throw error;
-  }
-};
-
-export const fetchProducts = async (category = null) => {
-  try {
-    const url = category
-      ? `${API_BASE_URL}/products?category=${category}`
-      : `${API_BASE_URL}/products`
-
-    const response = await fetch(url)
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-
-    const products = await response.json()
-    return Array.isArray(products) ? products : []
-  } catch (error) {
-    console.error('Error fetching products:', error)
-    throw error
-  }
-}
-
-export const fetchProductById = async (id) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/products/${id}`)
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-
-    const product = await response.json()
-    return product
-  } catch (error) {
-    console.error('Error fetching product:', error)
-    throw error
   }
 }
 
@@ -213,3 +215,65 @@ export const createCartItem = async (cartData) => {
     throw error
   }
 }
+
+// Obtener todas las órdenes
+export const fetchOrders = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/orders`, {
+      headers: {
+        ...getAuthHeader(),
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const orders = await response.json();
+    return Array.isArray(orders) ? orders : [];
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    throw error;
+  }
+};
+
+// Obtener órdenes de un usuario específico
+export const fetchUserOrders = async (userId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/orders/user/${userId}`, {
+      headers: {
+        ...getAuthHeader(),
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const orders = await response.json();
+    return Array.isArray(orders) ? orders : [];
+  } catch (error) {
+    console.error('Error fetching user orders:', error);
+    throw error;
+  }
+};
+
+// Registrar un nuevo admin (solo para super admin)
+export const registerAdmin = async (adminData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/users/register-admin`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify(adminData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error al registrar admin');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error registering admin:', error);
+    throw error;
+  }
+};

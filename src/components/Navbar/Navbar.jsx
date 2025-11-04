@@ -1,17 +1,12 @@
 import React, { useState, useContext } from 'react'
 import { AuthContext } from '../../context/AuthContext'
 import { Link, NavLink } from 'react-router-dom'
-import CategorySidebar from '../CategorySidebar'
+// import CategorySidebar from '../CategorySidebar' // Archivo eliminado en merge
 import './Navbar.css'
 
 const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const { isAuthenticated, user, setIsAuthenticated, setUser } = useContext(AuthContext)
-
-  const handleLogout = () => {
-    setIsAuthenticated(false)
-    setUser(null)
-  }
+  const { isAuthenticated, user, logout, isAdmin } = useContext(AuthContext)
 
   return (
     <aside className="navbar">
@@ -27,21 +22,20 @@ const Navbar = () => {
           <NavLink to="/" className="navbar__link">
             Inicio
           </NavLink>
-          <button
-            type="button"
-            className="navbar__link navbar__link--button"
-            onClick={() => setSidebarOpen(true)}
-            aria-expanded={sidebarOpen}
-            aria-controls="category-sidebar"
-          >
-            Productos <span aria-hidden="true">&gt;</span>
-          </button>
+          <NavLink to="/productos" className="navbar__link">
+            Productos
+          </NavLink>
           <NavLink to="/contacto" className="navbar__link">
             Contacto
           </NavLink>
-          {isAuthenticated && (
+          {isAuthenticated && isAdmin() && (
             <NavLink to="/admin" className="navbar__link">
               Admin
+            </NavLink>
+          )}
+          {isAuthenticated && !isAdmin() && (
+            <NavLink to="/perfil" className="navbar__link">
+              Mi Perfil
             </NavLink>
           )}
         </nav>
@@ -51,9 +45,14 @@ const Navbar = () => {
         <p className="navbar__social">INSTAGRAM</p>
         <div className="navbar__actions">
           {isAuthenticated ? (
-            <button className="navbar__action" onClick={handleLogout}>
-              CERRAR SESIÓN
-            </button>
+            <>
+              <span className="navbar__user-name">
+                {user?.name || user?.email}
+              </span>
+              <button className="navbar__action" onClick={logout}>
+                CERRAR SESIÓN
+              </button>
+            </>
           ) : (
             <>
               <Link to="/registro" className="navbar__action">
@@ -67,7 +66,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      <CategorySidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      {/* <CategorySidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} /> */}
     </aside>
   )
 }
