@@ -91,6 +91,7 @@ export const updateProduct = async (id, productData) => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        ...getAuthHeader(),
       },
       body: JSON.stringify(productData),
     })
@@ -111,6 +112,9 @@ export const deleteProduct = async (id) => {
   try {
     const response = await fetch(`${API_BASE_URL}/products/${id}`, {
       method: 'DELETE',
+      headers: {
+        ...getAuthHeader(),
+      },
     })
 
     if (!response.ok) {
@@ -145,7 +149,11 @@ export const fetchCart = async (userId = null) => {
       ? `${API_BASE_URL}/cart?userId=${userId}`
       : `${API_BASE_URL}/cart`
 
-    const response = await fetch(url)
+    const response = await fetch(url, {
+      headers: {
+        ...getAuthHeader(),
+      },
+    })
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
@@ -164,6 +172,7 @@ export const createCartItem = async (cartData) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...getAuthHeader(),
       },
       body: JSON.stringify(cartData),
     })
