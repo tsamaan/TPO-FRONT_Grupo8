@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import { fetchCart, createCartItem, deleteCartItem } from '../services/api';
+import { createCartItem, deleteCartItem } from '../services/api';
 
 // Crear el contexto
 export const CartContext = createContext();
@@ -17,20 +17,6 @@ export const useCart = () => {
 export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState([]);
     const [totalItems, setTotalItems] = useState(0);
-    // Cargar carrito desde la API al iniciar
-    useEffect(() => {
-        const loadCart = async () => {
-            try {
-                const apiCart = await fetchCart();
-                setCart(apiCart);
-                setTotalItems(apiCart.reduce((acc, item) => acc + (item.quantity || 1), 0));
-            } catch (error) {
-                setCart([]);
-                setTotalItems(0);
-            }
-        };
-        loadCart();
-    }, []);
 
     // Agregar producto al carrito y a la API (ahora síncrono para evitar problemas de renderizado)
     const addToCart = (product, quantity = 1) => {
@@ -55,8 +41,7 @@ export const CartProvider = ({ children }) => {
             }
         });
         setTotalItems(prevTotal => Math.max(prevTotal + quantity, 0));
-        // Opcional: llamar a la API en segundo plano
-        createCartItem({ ...product, quantity }).catch(() => {});
+        // Ya no se sincroniza el carrito con la API
     };
 
     // Eliminar producto del carrito y de la API
@@ -69,8 +54,7 @@ export const CartProvider = ({ children }) => {
             setTotalItems(prevTotal => prevTotal - productToRemove.quantity);
             return currentCart.filter(item => item.id !== productId);
         });
-        // Eliminar en la API
-        deleteCartItem(productId).catch(() => {});
+    // Ya no se sincroniza el carrito con la API
     };
 
     // Vaciar el carrito

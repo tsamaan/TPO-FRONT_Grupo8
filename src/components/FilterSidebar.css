@@ -214,14 +214,14 @@
 }
 
 .tag-button:hover {
-  border-color: #007bff;
+  border-color: #b63939;
   background-color: #f8f9ff;
-  color: #007bff;
+  color: #b63939;
 }
 
 .tag-button.selected {
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: #b63939;
+  border-color: #b63939;
   color: white;
 }
 
@@ -272,13 +272,13 @@
 
 .price-input-group input:hover,
 .price-input-group input:focus {
-  border-color: #007bff;
+  border-color: #008000;;
   outline: none;
 }
 
 .apply-price-button {
   padding: 0.75rem 1.5rem;
-  background-color: #007bff;
+  background-color: #008000;
   color: white;
   border: none;
   border-radius: 6px;
@@ -291,14 +291,14 @@
 }
 
 .apply-price-button:hover {
-  background-color: #0056b3;
+  background-color: #005b00;
 }
 
 /* Clear Filters Button */
 .clear-filters-button {
   width: 100%;
   padding: 1rem;
-  background-color: #dc3545;
+  background-color: #ff0000;
   color: white;
   border: none;
   border-radius: 6px;

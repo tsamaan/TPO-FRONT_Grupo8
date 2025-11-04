@@ -4,12 +4,12 @@
   right: 20px;
   transform: translateY(-50%);
   z-index: 1001;
-  background: #007bff;
-  border-radius: 50%;
-  box-shadow: 0 3px 8px rgba(0, 123, 255, 0.4);
+  background: #000000;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   padding: 0;
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   border: none;
   cursor: pointer;
   display: flex;
@@ -19,26 +19,26 @@
 }
 
 .filter-widget:hover {
-  background: #0056b3;
+  background: #1a1a1a;
   transform: translateY(-50%) scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.6);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
 }
 
 .filter-icon-main {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   color: white;
 }
 
 @media (max-width: 768px) {
   .filter-widget {
-    width: 42px;
-    height: 42px;
+    width: 50px;
+    height: 50px;
     right: 15px;
   }
 
   .filter-icon-main {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
   }
 }

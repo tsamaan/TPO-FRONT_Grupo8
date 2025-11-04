@@ -6,12 +6,16 @@ const AddProductForm = ({ onProductAdded }) => {
   const [product, setProduct] = useState({
     name: '',
     description: '',
-    image: '',
+    images: [],
     stock: 0,
     price: 0,
     category: '',
-    tags: []
+    tags: [],
+    colores: []
   });
+
+  const [currentImageUrl, setCurrentImageUrl] = useState('');
+  const [currentColor, setCurrentColor] = useState('');
 
   const [errors, setErrors] = useState({});
 
@@ -23,7 +27,7 @@ const AddProductForm = ({ onProductAdded }) => {
       if (product.stock < 0) newErrors.stock = 'El stock no puede ser negativo.';
       if (product.price <= 0) newErrors.price = 'El precio debe ser mayor que cero.';
       if (!product.category) newErrors.category = 'La categoría es obligatoria.';
-      if (!product.image) newErrors.image = 'Debe agregar al menos una imagen.';
+      if (!product.images || product.images.length === 0) newErrors.images = 'Debe agregar al menos una imagen.';
       
       setErrors(newErrors);
     };
@@ -39,6 +43,40 @@ const AddProductForm = ({ onProductAdded }) => {
     }));
   };
 
+  const addColor = () => {
+    if (currentColor.trim() && !product.colores.includes(currentColor.trim())) {
+      setProduct(prevProduct => ({
+        ...prevProduct,
+        colores: [...prevProduct.colores, currentColor.trim()]
+      }));
+      setCurrentColor('');
+    }
+  };
+
+  const removeColor = (index) => {
+    setProduct(prevProduct => ({
+      ...prevProduct,
+      colores: prevProduct.colores.filter((_, i) => i !== index)
+    }));
+  };
+
+  const addImage = () => {
+    if (currentImageUrl.trim()) {
+      setProduct(prevProduct => ({
+        ...prevProduct,
+        images: [...prevProduct.images, currentImageUrl.trim()]
+      }));
+      setCurrentImageUrl('');
+    }
+  };
+
+  const removeImage = (index) => {
+    setProduct(prevProduct => ({
+      ...prevProduct,
+      images: prevProduct.images.filter((_, i) => i !== index)
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (Object.keys(errors).length === 0) {
@@ -49,12 +87,15 @@ const AddProductForm = ({ onProductAdded }) => {
         setProduct({
           name: '',
           description: '',
-          image: '',
+          images: [],
           stock: 0,
           price: 0,
           category: '',
-          tags: []
+          tags: [],
+          colores: []
         });
+        setCurrentImageUrl('');
+        setCurrentColor('');
       } catch (error) {
         alert('Error al crear el producto');
         console.error(error);
@@ -99,15 +140,34 @@ const AddProductForm = ({ onProductAdded }) => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="image">Imagen (URL)</label>
-        <input
-          type="text"
-          id="image"
-          name="image"
-          value={product.image}
-          onChange={handleChange}
-        />
-        {errors.image && <p className="error">{errors.image}</p>}
+        <label htmlFor="images">Imágenes (URLs)</label>
+        <div className="image-url-group">
+          <input
+            type="text"
+            id="current-image"
+            placeholder="URL de la imagen"
+            value={currentImageUrl}
+            onChange={(e) => setCurrentImageUrl(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addImage())}
+          />
+          <button type="button" onClick={addImage} disabled={!currentImageUrl.trim()}>
+            Agregar
+          </button>
+        </div>
+        {errors.images && <p className="error">{errors.images}</p>}
+
+        {product.images.length > 0 && (
+          <div className="image-preview">
+            {product.images.map((imageUrl, index) => (
+              <div key={index} className="image-item">
+                <img src={imageUrl} alt={`Imagen ${index + 1}`} />
+                <button type="button" onClick={() => removeImage(index)}>
+                  Eliminar
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="form-group">
@@ -156,6 +216,36 @@ const AddProductForm = ({ onProductAdded }) => {
           value={Array.isArray(product.tags) ? product.tags.join(', ') : ''}
           onChange={handleChange}
         />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="colores">Colores Disponibles</label>
+        <div className="color-input-group">
+          <input
+            type="text"
+            id="current-color"
+            placeholder="Nombre del color"
+            value={currentColor}
+            onChange={(e) => setCurrentColor(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addColor())}
+          />
+          <button type="button" onClick={addColor} disabled={!currentColor.trim() || product.colores.includes(currentColor.trim())}>
+            Agregar Color
+          </button>
+        </div>
+
+        {product.colores.length > 0 && (
+          <div className="colors-preview">
+            {product.colores.map((color, index) => (
+              <div key={index} className="color-item">
+                <span className="color-name">{color}</span>
+                <button type="button" onClick={() => removeColor(index)} className="color-remove">
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="form-actions">

@@ -62,9 +62,9 @@ const ProductList = ({ category: propCategory = null, filterOpen = false, onFilt
 
     // Filtrar por colores
     if (filters.selectedColors.length > 0) {
-      result = result.filter(product => 
-        product.colours && 
-        product.colours.some(color => filters.selectedColors.includes(color))
+      result = result.filter(product =>
+        product.colores &&
+        product.colores.some(color => filters.selectedColors.includes(color))
       );
     }
 

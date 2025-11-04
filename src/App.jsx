@@ -10,7 +10,6 @@ import Navbar from './components/Navbar/Navbar';
 import CartWidget from './components/Carrito/CartWidget';
 import CartSidebar from './components/CartSidebar';
 import ProductsPage from './pages/ProductsPage'
-import ProductDetail from './components/ProductDetail'
 import ContactPage from './pages/ContactPage'
 import Footer from './components/Footer/Footer'
 import FilterWidget from './components/FilterWidget'
@@ -82,12 +81,14 @@ function MainRoutes(props) {
     handleProductCountChange
   } = props;
 
-  // Mostrar filtro solo en listado de productos y categorías
+  // Mostrar filtro en listado de productos y categorías (incluye /productos/categoria/:categoria)
   const showFilterWidget = (
-    location.pathname.startsWith('/productos') &&
-    !/^\/productos\/[a-zA-Z0-9_-]+$/.test(location.pathname) &&
-    !location.pathname.startsWith('/productos/categoria/')
-  ) || location.pathname === '/productos' || location.pathname === '/mochilas' || location.pathname === '/materos' || location.pathname === '/bolsos';
+    location.pathname === '/productos' ||
+    location.pathname.startsWith('/productos/categoria/') ||
+    location.pathname === '/mochilas' ||
+    location.pathname === '/materos' ||
+    location.pathname === '/bolsos'
+  );
 
   return (
     <Routes>
@@ -100,17 +101,16 @@ function MainRoutes(props) {
             <Navbar />
             <CartWidget onMenuClick={handleCartClick} />
             {showFilterWidget && (
-              <FilterWidget onFilterClick={handleFilterClick} productCount={productCount} />
+              <FilterWidget onFilterClick={filterOpen ? handleFilterClose : handleFilterClick} productCount={productCount} isOpen={filterOpen} />
             )}
             <CartSidebar isOpen={cartOpen} onClose={handleCartClose} />
               <Routes>
                 <Route path="/" element={<HomePage />} />
-                <Route path="/admin" element={<AdminDashboard />} />
                 <Route
-                  path="/dashboard"
+                  path="/admin"
                   element={
                     isAuthenticated ? (
-                      <ProtectedScreen onLogout={handleLogout} user={user} />
+                      <AdminDashboard />
                     ) : (
                       <Navigate to="/login" replace />
                     )

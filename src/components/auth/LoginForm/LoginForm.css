@@ -62,13 +62,13 @@
 		box-sizing: border-box;
 	}
 .login-form-input:focus {
-	border: 1px solid #ff0066;
+	border: 1px solid #b63939;
 	outline: none;
-	box-shadow: 0 0 0 2px rgba(255, 0, 102, 0.1);
+	box-shadow: 0 0 0 2px rgba(182, 57, 57, 0.1);
 }
 
 .login-form-btn {
-	background: #ff0066;
+	background: #b63939;
 	color: #fff;
 	border: none;
 	border-radius: 25px;
@@ -82,7 +82,7 @@
 	text-transform: uppercase;
 }
 .login-form-btn:hover {
-	background: #e5005c;
+	background: #c0392b;
 	transform: translateY(-1px);
 }
 
@@ -94,7 +94,7 @@
 }
 .login-form-link {
 	background: transparent;
-	color: #ff0066;
+	color: #b63939;
 	border: none;
 	font-size: 1rem;
 	font-weight: 500;
@@ -105,7 +105,7 @@
 	transition: color 0.3s ease;
 }
 .login-form-link:hover {
-	color: #e5005c;
+	color: #a02c2c;
 }
 
 .login-form-error {

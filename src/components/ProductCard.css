@@ -49,6 +49,35 @@
   margin: 0 4px 4px 0;
 }
 
+.product-card-colors {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0.5rem 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.product-card-color-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #e5e7eb;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.product-card-color-circle:hover {
+  transform: scale(1.1);
+  border-color: #9ca3af;
+}
+
+.color-count {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+  margin-left: 0.25rem;
+}
+
 
 .product-card-price {
   font-size: 1.08rem;
@@ -63,7 +92,7 @@
 
 
 .add-btn {
-  background: #ff2e7a;
+  background: #b63939;
   color: #fff;
   border: none;
   border-radius: 9px;
@@ -75,7 +104,7 @@
 }
 
 .add-btn:hover {
-  background: #e91e63;
+  background: #a02c2c;
 }
 
 

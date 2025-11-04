@@ -93,8 +93,8 @@ const AdminDashboard = () => {
               <tr key={product.id}>
                 <td>{product.id}</td>
                 <td>
-                  {product.image && (
-                    <img src={product.image} alt={product.name} className="product-list-admin__image" />
+                  {(product.images?.[0] || product.image) && (
+                    <img src={product.images?.[0] || product.image} alt={product.name} className="product-list-admin__image" />
                   )}
                 </td>
                 <td>{product.name}</td>

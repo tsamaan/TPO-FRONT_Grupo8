@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { getColorHex } from '../utils/colorUtils';
 import './FilterSidebar.css';
 
 const FilterSidebar = ({ isOpen, onClose, products, onFilterChange }) => {
@@ -33,8 +34,8 @@ const FilterSidebar = ({ isOpen, onClose, products, onFilterChange }) => {
   const getAvailableColors = () => {
     const colorCounts = {};
     products.forEach(product => {
-      if (product.colours && Array.isArray(product.colours)) {
-        product.colours.forEach(color => {
+      if (product.colores && Array.isArray(product.colores)) {
+        product.colores.forEach(color => {
           colorCounts[color] = (colorCounts[color] || 0) + 1;
         });
       }
@@ -103,23 +104,11 @@ const FilterSidebar = ({ isOpen, onClose, products, onFilterChange }) => {
   };
 
   const getColorButtonStyle = (color) => {
-    const colorMap = {
-      'Negro': '#000000',
-      'Blanco': '#FFFFFF',
-      'Gris': '#808080',
-      'Azul': '#0066CC',
-      'Verde': '#00AA00',
-      'Rojo': '#CC0000',
-      'Rosa': '#FF69B4',
-      'Naranja': '#FF8800',
-      'Amarillo': '#FFDD00',
-      'Morado': '#8A2BE2',
-      'Celeste': '#87CEEB',
-      'Fucsia': '#FF1493'
-    };
+    // Importar desde utils
+    const colorHex = getColorHex(color);
 
     return {
-      backgroundColor: colorMap[color] || '#CCCCCC',
+      backgroundColor: colorHex,
       border: filters.selectedColors.includes(color) ? '3px solid #333' : '2px solid #ddd'
     };
   };

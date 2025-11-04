@@ -11,9 +11,8 @@ const images = [
   { src: 'https://dcdn-us.mitiendanube.com/stores/005/572/435/themes/atlantico/2-slide-1747671771536-6155866042-f246ef8334b9fda2333c74f710a6e7ae1747671773-1920-1920.webp?398181426', alt: 'Texto 3' },
 ];
 const promos = [
-  "¡TODA LA WEB CON DESCUENTOS INPERDIBLES!",
-  "Envío gratis en compras mayores a $20.000",
-  "3 y 6 cuotas sin interés"
+  "¡TODA LA WEB CON DESCUENTOS IMPERDIBLES!",
+  "3 y 6 cuotas SIN INTERES"
 ];
 const HomePage = () => {
   return (

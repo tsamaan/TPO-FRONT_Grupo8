@@ -1,5 +1,5 @@
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import "../LoginForm/LoginForm.css";
 
@@ -14,6 +14,17 @@ const RegisterForm = ({ onShowLogin }) => {
     confirmPassword: ""
   });
   const [localError, setLocalError] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+        onShowLogin();
+      }, 1200);
+    }
+  }, [isAuthenticated, onShowLogin]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -74,7 +85,7 @@ const RegisterForm = ({ onShowLogin }) => {
         </div>
         {localError && <div className="login-form-error">{localError}</div>}
         {error && !localError && <div className="login-form-error">{error}</div>}
-        {isAuthenticated && <div className="login-form-success">¡Registro exitoso!</div>}
+  {showSuccess && <div className="login-form-success">¡Registro exitoso!</div>}
       </form>
     </div>
   );
