@@ -1,6 +1,6 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { fetchProducts } from '../services/api';
+import { useProducts } from '../context/ProductContext';
 import { CartContext } from '../context/CartContext';
 import ProductCard from './ProductCard';
 import FilterSidebar from './FilterSidebar';
@@ -9,118 +9,73 @@ import './ProductList.css';
 const ProductList = ({ category: propCategory = null, filterOpen = false, onFilterClose, onProductCountChange }) => {
   const params = useParams();
   const category = params.categoria || propCategory;
-  const [allProducts, setAllProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  
+  // Usar el contexto de productos
+  const {
+    filteredProducts,
+    products: allProducts,
+    loading,
+    error,
+    setCategory: setFilterCategory,
+    setPriceRange,
+    setSortBy,
+    setSelectedColors,
+    setSelectedTags,
+    clearFilters
+  } = useProducts();
+  
   const { cart, addToCart, removeFromCart } = useContext(CartContext);
 
+  // Cuando cambia la categoría de la prop, actualizar el filtro
   useEffect(() => {
-    let isSubscribed = true;
-
-    const loadProducts = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const data = await fetchProducts(category);
-        if (isSubscribed) {
-          const productsArray = Array.isArray(data) ? data : [];
-          setAllProducts(productsArray);
-          setFilteredProducts(productsArray);
-          // Reportar el contador inicial de productos
-          if (onProductCountChange) {
-            onProductCountChange(productsArray.length);
-          }
-        }
-      } catch (err) {
-        if (isSubscribed) {
-          setError(err.message || 'Error al cargar los productos');
-          setAllProducts([]);
-          setFilteredProducts([]);
-          // Resetear contador en caso de error
-          if (onProductCountChange) {
-            onProductCountChange(0);
-          }
-        }
-      } finally {
-        if (isSubscribed) {
-          setLoading(false);
-        }
+    console.log('Cambio de categoría detectado:', category);
+    
+    // Primero limpiar otros filtros para evitar conflictos
+    clearFilters();
+    
+    // Pequeño delay para asegurar que clearFilters se aplique primero
+    setTimeout(() => {
+      if (category) {
+        setFilterCategory(category);
+      } else {
+        setFilterCategory('');
       }
-    };
+    }, 0);
+  }, [category, setFilterCategory, clearFilters]); // Ahora las funciones son estables con useCallback
 
-    loadProducts();
-
-    return () => {
-      isSubscribed = false;
-    };
-  }, [category]);
-
-  const applyFilters = (filters) => {
-    let result = [...allProducts];
-
-    // Filtrar por colores
-    if (filters.selectedColors.length > 0) {
-      result = result.filter(product =>
-        product.colores &&
-        product.colores.some(color => filters.selectedColors.includes(color))
-      );
-    }
-
-    // Filtrar por tags
-    if (filters.selectedTags.length > 0) {
-      result = result.filter(product => 
-        product.tags && 
-        product.tags.some(tag => filters.selectedTags.includes(tag))
-      );
-    }
-
-    // Filtrar por rango de precio
-    if (filters.priceRange.min !== '' || filters.priceRange.max !== '') {
-      result = result.filter(product => {
-        const price = parseFloat(product.price);
-        const min = filters.priceRange.min !== '' ? parseFloat(filters.priceRange.min) : 0;
-        const max = filters.priceRange.max !== '' ? parseFloat(filters.priceRange.max) : Infinity;
-        return price >= min && price <= max;
-      });
-    }
-
-    // Ordenar productos
-    switch (filters.sortBy) {
-      case 'name':
-        result.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case 'name-desc':
-        result.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      case 'price-asc':
-        result.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-        break;
-      case 'price-desc':
-        result.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-        break;
-      case 'newest':
-        // Por defecto, mantener el orden original (más nuevos primero)
-        break;
-      case 'popular':
-        // Ordenar por stock descendente como proxy de popularidad
-        result.sort((a, b) => parseFloat(b.stock) - parseFloat(a.stock));
-        break;
-      default:
-        break;
-    }
-
-    setFilteredProducts(result);
-
-    // Reportar el contador de productos al componente padre
+  // Reportar el contador de productos filtrados
+  useEffect(() => {
     if (onProductCountChange) {
-      onProductCountChange(result.length);
+      onProductCountChange(filteredProducts.length);
+    }
+  }, [filteredProducts, onProductCountChange]);
+
+  const handleFilterChange = (filters) => {
+    // Aplicar colores
+    if (filters.selectedColors) {
+      setSelectedColors(filters.selectedColors);
+    }
+
+    // Aplicar tags
+    if (filters.selectedTags) {
+      setSelectedTags(filters.selectedTags);
+    }
+
+    // Aplicar rango de precio
+    if (filters.priceRange) {
+      const min = filters.priceRange.min !== '' ? parseFloat(filters.priceRange.min) : 0;
+      const max = filters.priceRange.max !== '' ? parseFloat(filters.priceRange.max) : Infinity;
+      setPriceRange(min, max);
+    }
+
+    // Aplicar ordenamiento
+    if (filters.sortBy) {
+      setSortBy(filters.sortBy);
     }
   };
 
-  const handleFilterChange = (filters) => {
-    applyFilters(filters);
+  const handleClearFilters = () => {
+    clearFilters();
   };
 
   if (loading) {
@@ -163,12 +118,7 @@ const ProductList = ({ category: propCategory = null, filterOpen = false, onFilt
             <p>No se encontraron productos que coincidan con los filtros seleccionados.</p>
             <button
               className="clear-filters-link"
-              onClick={() => applyFilters({
-                sortBy: 'name',
-                selectedColors: [],
-                selectedTags: [],
-                priceRange: { min: '', max: '' }
-              })}
+              onClick={handleClearFilters}
             >
               Limpiar filtros
             </button>

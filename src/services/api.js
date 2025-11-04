@@ -1,5 +1,7 @@
+import { config } from '../config/env'
+
 // Configuración base de la API
-const API_BASE_URL = 'http://localhost:8080/api'
+const API_BASE_URL = config.apiBaseUrl
 
 // Helper para obtener el token del localStorage
 const getAuthHeader = () => {
@@ -40,6 +42,21 @@ export const fetchProductById = async (id) => {
     throw error
   }
 }
+
+// CATEGORÍAS
+export const fetchCategories = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/categories`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const categories = await response.json();
+    return Array.isArray(categories) ? categories : [];
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    throw error;
+  }
+};
 
 export const getProductById = async (id) => {
   try {

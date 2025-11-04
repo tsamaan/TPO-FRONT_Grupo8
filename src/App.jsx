@@ -2,6 +2,8 @@ import { useContext, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { ProductProvider } from './context/ProductContext';
+import { PromoProvider } from './context/PromoContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -142,9 +144,13 @@ function MainRoutes(props) {
 function App() {
   return (
     <AuthProvider>
-      <CartProvider>
-        <MainApp />
-      </CartProvider>
+      <PromoProvider>
+        <ProductProvider>
+          <CartProvider>
+            <MainApp />
+          </CartProvider>
+        </ProductProvider>
+      </PromoProvider>
     </AuthProvider>
   )
 }

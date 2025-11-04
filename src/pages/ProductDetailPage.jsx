@@ -1,13 +1,10 @@
 import React from 'react';
 import ProductDetail from '../components/ProductDetail';
 import BannerSwiper from '../components/BannerSwiper';
+import { usePromos } from '../context/PromoContext';
 
-const promos = [
-  "¡TODA LA WEB CON DESCUENTOS INPERDIBLES!",
-  "Envío gratis en compras mayores a $20.000",
-  "3 y 6 cuotas sin interés"
-];
 const ProductDetailPage = () => {
+  const { promos } = usePromos();
   return (
     <main>
       <BannerSwiper promos={promos} />

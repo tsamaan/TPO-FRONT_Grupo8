@@ -2,6 +2,7 @@ import React from 'react';
 import ProductList from '../components/ProductList';
 import ImageCarousel from '../components/ImageCarousel';
 import BannerSwiper from '../components/BannerSwiper';
+import { usePromos } from '../context/PromoContext';
 // import MosaicCategory from '../components/MosaicCategory'; // Archivo eliminado en merge
 import './HomePage.css';
 
@@ -10,11 +11,9 @@ const images = [
   { src: 'https://dcdn-us.mitiendanube.com/stores/005/572/435/themes/atlantico/2-slide-1745246668335-3628377708-f1b09c88bef8f46956809197208d4c7f1745246669-1920-1920.webp?398181426', alt: 'Texto 2' },
   { src: 'https://dcdn-us.mitiendanube.com/stores/005/572/435/themes/atlantico/2-slide-1747671771536-6155866042-f246ef8334b9fda2333c74f710a6e7ae1747671773-1920-1920.webp?398181426', alt: 'Texto 3' },
 ];
-const promos = [
-  "¡TODA LA WEB CON DESCUENTOS IMPERDIBLES!",
-  "3 y 6 cuotas SIN INTERES"
-];
+
 const HomePage = () => {
+  const { promos } = usePromos();
   return (
     <div className="home-page">
       <main className="main-content">

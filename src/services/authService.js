@@ -1,5 +1,7 @@
 
-const API_BASE_URL = 'http://localhost:8080/api'
+import { config } from '../config/env'
+
+const API_BASE_URL = config.apiBaseUrl
 
 export async function loginService(email, password) {
   try {
@@ -12,23 +14,35 @@ export async function loginService(email, password) {
     })
     
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
     }
 
     const data = await response.json()
 
-    if (data.success && data.user) {
-      // Guardar el token si viene en la respuesta
-      if (data.token) {
-        localStorage.setItem('token', data.token)
+    // El backend devuelve { token, user }
+    if (data.token && data.user) {
+      // Guardar el token JWT en localStorage
+      localStorage.setItem('token', data.token)
+      localStorage.setItem('user', JSON.stringify(data.user))
+      
+      return { 
+        success: true, 
+        user: data.user,
+        token: data.token 
       }
-      return { success: true, user: data.user }
     } else {
-      return { success: false, message: data.message || "Usuario o contraseña incorrectos" }
+      return { 
+        success: false, 
+        message: data.message || "Usuario o contraseña incorrectos" 
+      }
     }
   } catch (error) {
     console.error('Error during login:', error)
-    return { success: false, message: "Error de conexión" }
+    return { 
+      success: false, 
+      message: error.message || "Error de conexión con el servidor" 
+    }
   }
 }
 
@@ -42,30 +56,76 @@ export async function registerService(data) {
       body: JSON.stringify({
         email: data.email,
         password: data.password,
-        confirmPassword: data.confirmPassword,
         nombre: data.nombre,
         apellido: data.apellido,
-        usuario: data.usuario,
         name: `${data.nombre} ${data.apellido}`,
-        address: data.address || '',
-        phone: data.phone || ''
+        phone: data.phone || '',
+        // El backend espera una dirección embebida
+        direccion: {
+          calle: data.address || ''
+        }
       }),
     })
 
     if (!response.ok) {
-      const errorData = await response.json()
-      return { success: false, message: errorData.message || "Error al registrar" }
+      const errorData = await response.json().catch(() => ({}));
+      return { 
+        success: false, 
+        message: errorData.message || "Error al registrar usuario" 
+      }
     }
 
     const result = await response.json()
     
-    if (result.success) {
-      return { success: true }
+    // El backend devuelve el usuario creado
+    if (result.id) {
+      return { 
+        success: true,
+        message: "Usuario registrado exitosamente" 
+      }
     } else {
-      return { success: false, message: result.message || "Error al registrar" }
+      return { 
+        success: false, 
+        message: result.message || "Error al registrar usuario" 
+      }
     }
   } catch (error) {
     console.error('Error during registration:', error)
-    return { success: false, message: "Error de conexión" }
+    return { 
+      success: false, 
+      message: error.message || "Error de conexión con el servidor" 
+    }
+  }
+}
+
+export async function logoutService() {
+  try {
+    const token = localStorage.getItem('token');
+    
+    // Si hay un endpoint de logout en el backend
+    if (token) {
+      await fetch(`${API_BASE_URL}/users/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }).catch(() => {
+        // Ignorar errores del logout en el backend
+        console.log('Logout endpoint no disponible, solo limpiando localStorage');
+      });
+    }
+    
+    // Limpiar localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Error during logout:', error);
+    // Aún así limpiar el localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    return { success: true };
   }
 }

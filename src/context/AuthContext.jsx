@@ -1,5 +1,5 @@
 import React, { useState, createContext, useEffect } from "react";
-import { loginService, registerService } from "../services/authService";
+import { loginService, registerService, logoutService } from "../services/authService";
 
 export const AuthContext = createContext();
 
@@ -33,12 +33,13 @@ export const AuthProvider = ({ children }) => {
       setUser(result.user);
       setError("");
       
-      // Guardar usuario en localStorage
-      localStorage.setItem('user', JSON.stringify(result.user));
+      // El token ya está guardado en localStorage por loginService
+      return true;
     } else {
       setIsAuthenticated(false);
       setUser(null);
       setError(result.message);
+      return false;
     }
   };
 
@@ -53,11 +54,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await logoutService();
     setIsAuthenticated(false);
     setUser(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
   };
 
   // Verificar si el usuario tiene un rol específico

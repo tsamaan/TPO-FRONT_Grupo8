@@ -3,12 +3,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import ProductList from '../components/ProductList';
 import BannerSwiper from '../components/BannerSwiper';
-
-const promos = [
-  "¡TODA LA WEB CON DESCUENTOS INPERDIBLES!",
-  "Envío gratis en compras mayores a $20.000",
-  "3 y 6 cuotas sin interés"
-];
+import { usePromos } from '../context/PromoContext';
 
 const categorias = [
   { nombre: 'Todos los Productos', path: '/productos' },
@@ -20,6 +15,7 @@ const categorias = [
 
 const ProductsPage = ({ filterOpen, onFilterClose, onProductCountChange, category }) => {
   const location = useLocation();
+  const { promos } = usePromos();
 
   const categoriaActual = categorias.find(cat => location.pathname === cat.path)?.nombre || 'Todos los Productos';
 

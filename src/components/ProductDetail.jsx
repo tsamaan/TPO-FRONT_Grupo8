@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { useProducts } from '../context/ProductContext';
 import { useParams } from 'react-router-dom';
-import { getProductById } from '../services/api';
 import { getColorHex } from '../utils/colorUtils';
 import ProductImageCarousel from './ProductImageCarousel';
 import './ProductDetail.css';
@@ -22,31 +22,65 @@ const mercadopagoSVG = (
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const { products, loading: productsLoading } = useProducts();
   const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [cantidad, setCantidad] = useState(1);
   const [added, setAdded] = useState(false);
+  const [notFound, setNotFound] = useState(false);
 
   const { addToCart, cart } = useCart();
 
   useEffect(() => {
-    setLoading(true);
-    getProductById(id)
-      .then((data) => {
-        console.log('Producto obtenido:', data);
-        setProduct(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError('No se pudo cargar el producto.');
-        setLoading(false);
-      });
-  }, [id]);
+    console.log('=== ProductDetail Debug ===');
+    console.log('ID de URL:', id);
+    console.log('Productos cargados:', products.length);
+    console.log('Loading:', productsLoading);
+    
+    if (products.length > 0) {
+      // Imprimir los primeros 3 IDs para debug
+      console.log('Primeros IDs disponibles:', products.slice(0, 3).map(p => ({ id: p.id, tipo: typeof p.id, name: p.name })));
+      console.log('ID buscado:', id, 'tipo:', typeof id);
+      
+      // Buscar el producto localmente en el contexto (probar con conversión a número y string)
+      const foundProduct = products.find(p => 
+        p.id === parseInt(id) || 
+        p.id === id || 
+        String(p.id) === String(id)
+      );
+      console.log('Producto encontrado:', foundProduct ? foundProduct.name : 'NO ENCONTRADO');
+      
+      if (foundProduct) {
+        setProduct(foundProduct);
+        setNotFound(false);
+      } else {
+        setProduct(null);
+        setNotFound(true);
+      }
+    } else if (!productsLoading) {
+      // Si no hay productos y ya terminó de cargar, es un error
+      setNotFound(true);
+    }
+  }, [id, products, productsLoading]);
 
-  if (loading) return <div className="product-detail-loading">Cargando...</div>;
-  if (error) return <div className="product-detail-error">{error}</div>;
-  if (!product) return <div className="product-detail-error">Producto no encontrado.</div>;
+  // Mostrar loading mientras se cargan los productos
+  if (productsLoading) {
+    console.log('Mostrando loading...');
+    return <div className="product-detail-loading">Cargando productos...</div>;
+  }
+
+  // Si no hay productos después de cargar
+  if (products.length === 0) {
+    console.log('No hay productos cargados');
+    return <div className="product-detail-error">No se pudieron cargar los productos.</div>;
+  }
+
+  // Si el producto no se encontró
+  if (notFound || !product) {
+    console.log('Producto no encontrado, ID:', id);
+    return <div className="product-detail-error">Producto no encontrado (ID: {id}).</div>;
+  }
+
+  console.log('Renderizando producto:', product.name);
 
   // Adaptar campos del producto
   const nombre = product.name || product.nombre;
@@ -60,6 +94,11 @@ const ProductDetail = () => {
   const precio = Number(product.price || product.precio);
   const stock = Number(product.stock);
   const categoria = product.category || product.categoria;
+  
+  // La categoría puede ser un objeto { id, name } o un string
+  const categoriaNombre = typeof categoria === 'object' && categoria?.name 
+    ? categoria.name 
+    : (typeof categoria === 'string' ? categoria : 'CATEGORÍA');
 
   // Cálculo de precios y cuotas
   const precioOriginal = precio ? (precio / (1 - descuento)).toFixed(2) : null;
@@ -101,7 +140,7 @@ const ProductDetail = () => {
       image: imagen,
       images: product.images || [imagen],
       stock: stock,
-      category: categoria
+      category: categoriaNombre
     };
     addToCart(productoParaCarrito, cantidad);
     setAdded(true);
@@ -118,7 +157,7 @@ const ProductDetail = () => {
       </div>
       <div className="product-detail-haversack-info">
         <div className="product-detail-haversack-breadcrumb">
-          INICIO {'>'} PRODUCTOS {'>'} {categoria?.toUpperCase() || 'CATEGORÍA'} {'>'} {nombre}
+          INICIO {'>'} PRODUCTOS {'>'} {categoriaNombre?.toUpperCase() || 'CATEGORÍA'} {'>'} {nombre}
         </div>
         <h1 className="product-detail-haversack-title">{nombre}</h1>
         <div className="product-detail-haversack-prices">
