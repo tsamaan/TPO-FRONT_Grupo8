@@ -13,22 +13,32 @@ const ProductCard = ({ product, inCart, onAdd, onRemove }) => {
             <span key={idx} className="product-card-tag">{tag}</span>
           ))}
         </div>
-        {product.colores && product.colores.length > 0 && (
+        
+        {/* Mostrar colores desde variants */}
+        {product.variants && product.variants.length > 0 && (
           <div className="product-card-colors">
-            {product.colores.map((color, idx) => (
+            {product.variants.slice(0, 3).map((variant, idx) => (
               <div
                 key={idx}
-                className="product-card-color-circle"
-                style={{ backgroundColor: getColorHex(color) }}
-                title={color}
+                className={`product-card-color-circle ${variant.stock === 0 ? 'out-of-stock' : ''}`}
+                style={{ backgroundColor: getColorHex(variant.color) }}
+                title={`${variant.color} - ${variant.stock > 0 ? `${variant.stock} disponibles` : 'Agotado'}`}
               />
             ))}
-            {product.colores.length > 3 && (
-              <span className="color-count">+{product.colores.length - 3}</span>
+            {product.variants.length > 3 && (
+              <span className="color-count">+{product.variants.length - 3}</span>
             )}
           </div>
         )}
-        <div className="product-card-price">${product.price.toLocaleString('es-AR')}</div>
+        
+        {/* Mostrar rango de precios si hay variantes con diferentes precios */}
+        <div className="product-card-price">
+          {product.minPrice !== product.maxPrice ? (
+            <>${product.minPrice?.toLocaleString('es-AR')} - ${product.maxPrice?.toLocaleString('es-AR')}</>
+          ) : (
+            <>${product.price?.toLocaleString('es-AR')}</>
+          )}
+        </div>
         
       </div>
     </div>

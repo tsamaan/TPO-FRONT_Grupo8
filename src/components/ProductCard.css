@@ -64,11 +64,29 @@
   border: 2px solid #e5e7eb;
   cursor: pointer;
   transition: transform 0.2s ease;
+  position: relative;
 }
 
 .product-card-color-circle:hover {
   transform: scale(1.1);
   border-color: #9ca3af;
+}
+
+/* Círculo agotado - con línea diagonal */
+.product-card-color-circle.out-of-stock {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.product-card-color-circle.out-of-stock::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -2px;
+  right: -2px;
+  height: 2px;
+  background: #ef4444;
+  transform: translateY(-50%) rotate(-45deg);
 }
 
 .color-count {

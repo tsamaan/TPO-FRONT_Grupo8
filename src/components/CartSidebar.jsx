@@ -137,10 +137,18 @@ const CartSidebar = ({ isOpen, onClose }) => {
             <div className="cart-empty">Tu carrito está vacío.</div>
           ) : (
             cart.map(item => (
-              <div className="cart-item" key={item.id}>
+              <div className="cart-item" key={item.cartItemId || item.sku || item.id}>
                 <img src={item.images?.[0] || item.image} alt={item.name} className="cart-item-img" />
                 <div className="cart-item-info">
-                  <div className="cart-item-name">{item.name}</div>
+                  <div className="cart-item-name">
+                    {item.name}
+                    {item.color && (
+                      <span className="cart-item-variant"> - {item.color}</span>
+                    )}
+                    {item.size && (
+                      <span className="cart-item-variant"> ({item.size})</span>
+                    )}
+                  </div>
                   <div className="cart-item-price">
                     ${typeof item.price === 'number' ? item.price.toLocaleString('es-AR') : '0'}
                   </div>
@@ -149,7 +157,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
                     <button onClick={() => handleDecrease(item)} disabled={item.quantity <= 1}>-</button>
                     <span>{item.quantity}</span>
                     <button onClick={() => handleIncrease(item)} disabled={stockMap.current[item.id] - item.quantity <= 0}>+</button>
-                    <button className="cart-item-remove" onClick={() => removeFromCart(item.id)}>Eliminar</button>
+                    <button className="cart-item-remove" onClick={() => removeFromCart(item.sku || item.id)}>Eliminar</button>
                   </div>
                 </div>
               </div>

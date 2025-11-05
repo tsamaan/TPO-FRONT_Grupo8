@@ -18,10 +18,16 @@ export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState([]);
     const [totalItems, setTotalItems] = useState(0);
 
-    // Agregar producto al carrito y a la API (ahora síncrono para evitar problemas de renderizado)
+    // Agregar producto al carrito (ahora maneja variantes por SKU)
     const addToCart = (product, quantity = 1) => {
         setCart(currentCart => {
-            const existingProductIndex = currentCart.findIndex(item => item.id === product.id);
+            // Buscar por SKU si existe, sino por ID
+            const itemKey = product.sku || product.id;
+            const existingProductIndex = currentCart.findIndex(item => 
+                (item.sku && item.sku === itemKey) || 
+                (!item.sku && item.id === product.id)
+            );
+            
             if (existingProductIndex >= 0) {
                 const updatedCart = [...currentCart];
                 const newQuantity = updatedCart[existingProductIndex].quantity + quantity;
@@ -35,26 +41,37 @@ export const CartProvider = ({ children }) => {
                 };
                 return updatedCart;
             } else if (quantity > 0) {
-                return [...currentCart, { ...product, quantity }];
+                // Agregar nuevo item con un ID único para el carrito
+                return [...currentCart, { 
+                    ...product, 
+                    quantity,
+                    cartItemId: product.sku || `${product.id}-${Date.now()}`
+                }];
             } else {
                 return currentCart;
             }
         });
         setTotalItems(prevTotal => Math.max(prevTotal + quantity, 0));
-        // Ya no se sincroniza el carrito con la API
     };
 
-    // Eliminar producto del carrito y de la API
-    const removeFromCart = (productId) => {
+    // Eliminar producto del carrito (ahora busca por SKU o ID)
+    const removeFromCart = (productIdentifier) => {
         setCart(currentCart => {
-            const productToRemove = currentCart.find(item => item.id === productId);
+            const productToRemove = currentCart.find(item => 
+                item.sku === productIdentifier || 
+                item.id === productIdentifier ||
+                item.cartItemId === productIdentifier
+            );
             if (!productToRemove) {
                 throw new Error('El producto no existe en el carrito');
             }
             setTotalItems(prevTotal => prevTotal - productToRemove.quantity);
-            return currentCart.filter(item => item.id !== productId);
+            return currentCart.filter(item => 
+                item.sku !== productIdentifier && 
+                item.id !== productIdentifier &&
+                item.cartItemId !== productIdentifier
+            );
         });
-    // Ya no se sincroniza el carrito con la API
     };
 
     // Vaciar el carrito

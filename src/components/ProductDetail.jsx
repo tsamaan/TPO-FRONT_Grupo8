@@ -24,6 +24,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const { products, loading: productsLoading } = useProducts();
   const [product, setProduct] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState(null);
   const [cantidad, setCantidad] = useState(1);
   const [added, setAdded] = useState(false);
   const [notFound, setNotFound] = useState(false);
@@ -37,27 +38,32 @@ const ProductDetail = () => {
     console.log('Loading:', productsLoading);
     
     if (products.length > 0) {
-      // Imprimir los primeros 3 IDs para debug
-      console.log('Primeros IDs disponibles:', products.slice(0, 3).map(p => ({ id: p.id, tipo: typeof p.id, name: p.name })));
-      console.log('ID buscado:', id, 'tipo:', typeof id);
-      
-      // Buscar el producto localmente en el contexto (probar con conversión a número y string)
+      // Buscar el producto localmente en el contexto
       const foundProduct = products.find(p => 
         p.id === parseInt(id) || 
         p.id === id || 
         String(p.id) === String(id)
       );
       console.log('Producto encontrado:', foundProduct ? foundProduct.name : 'NO ENCONTRADO');
+      console.log('Variantes:', foundProduct?.variants);
       
       if (foundProduct) {
         setProduct(foundProduct);
         setNotFound(false);
+        
+        // Seleccionar primera variante disponible automáticamente
+        if (foundProduct.variants && foundProduct.variants.length > 0) {
+          const firstAvailable = foundProduct.variants.find(
+            v => v.available && v.stock > 0
+          );
+          setSelectedVariant(firstAvailable || foundProduct.variants[0]);
+          console.log('Variante seleccionada:', firstAvailable || foundProduct.variants[0]);
+        }
       } else {
         setProduct(null);
         setNotFound(true);
       }
     } else if (!productsLoading) {
-      // Si no hay productos y ya terminó de cargar, es un error
       setNotFound(true);
     }
   }, [id, products, productsLoading]);
@@ -85,14 +91,19 @@ const ProductDetail = () => {
   // Adaptar campos del producto
   const nombre = product.name || product.nombre;
   const descripcion = product.description || product.descripcion;
-  // Normalizar ruta de imagen para que funcione en el navegador
-  let imagen = product.images?.[0] || product.image || product.imagen;
+  
+  // Usar imagen de la variante seleccionada o imagen por defecto del producto
+  let imagen = selectedVariant?.imageUrl || product.images?.[0] || product.image || product.imagen;
   if (imagen && imagen.startsWith('.')) {
-    // Quitar el "." inicial y reemplazar backslash por slash para rutas Windows
     imagen = imagen.replace(/^\./, '').replace(/\\/g, '/').replace(/\//g, '/');
   }
-  const precio = Number(product.price || product.precio);
-  const stock = Number(product.stock);
+  
+  // Usar precio de la variante seleccionada o precio base del producto
+  const precio = selectedVariant?.finalPrice || Number(product.price || product.precio);
+  
+  // Stock de la variante seleccionada o stock total del producto
+  const stock = selectedVariant?.stock || Number(product.totalStock || product.stock || 0);
+  
   const categoria = product.category || product.categoria;
   
   // La categoría puede ser un objeto { id, name } o un string
@@ -104,10 +115,19 @@ const ProductDetail = () => {
   const precioOriginal = precio ? (precio / (1 - descuento)).toFixed(2) : null;
   const precioCuota = precio ? (precio / cuotas).toFixed(2) : null;
 
-
-  // Calcular cantidad ya agregada al carrito de este producto
-  const cantidadEnCarrito = cart.find(item => item.id === product?.id)?.quantity || 0;
+  // Calcular cantidad ya agregada al carrito de esta variante específica
+  const cantidadEnCarrito = selectedVariant 
+    ? cart.find(item => item.sku === selectedVariant.sku)?.quantity || 0
+    : cart.find(item => item.id === product?.id)?.quantity || 0;
+    
   const stockDisponible = stock - cantidadEnCarrito;
+
+  // Manejar selección de color (variante)
+  const handleVariantSelect = (variant) => {
+    console.log('Variante seleccionada:', variant);
+    setSelectedVariant(variant);
+    setCantidad(1); // Resetear cantidad al cambiar variante
+  };
 
   const handleCantidad = (val) => {
     if (isNaN(val) || val < 1) val = 1;
@@ -128,19 +148,30 @@ const ProductDetail = () => {
   };
 
   const handleAddCart = () => {
+    // Si hay variantes, verificar que se haya seleccionado una
+    if (product.variants && product.variants.length > 0 && !selectedVariant) {
+      alert('Por favor selecciona un color');
+      return;
+    }
+    
     if (cantidad > stockDisponible) {
       alert('No puedes agregar más productos de los que hay en stock disponible');
       return;
     }
+    
     // Armar el objeto producto con los campos que espera el carrito
     const productoParaCarrito = {
       id: product.id,
+      variantId: selectedVariant?.id,
+      sku: selectedVariant?.sku || product.id,
       name: nombre,
       price: precio,
       image: imagen,
       images: product.images || [imagen],
       stock: stock,
-      category: categoriaNombre
+      category: categoriaNombre,
+      color: selectedVariant?.color,
+      size: selectedVariant?.size
     };
     addToCart(productoParaCarrito, cantidad);
     setAdded(true);
@@ -179,6 +210,49 @@ const ProductDetail = () => {
           <span title="MercadoPago">{mercadopagoSVG}</span>
           <a href="#" className="product-detail-haversack-link">Ver medios de pago</a>
         </div>
+        
+        {/* Selector de Variantes (Colores) */}
+        {product.variants && product.variants.length > 0 && (
+          <div className="product-detail-variant-selector">
+            <h3 className="variant-selector-title">Seleccionar Color:</h3>
+            <div className="variant-options">
+              {product.variants.map(variant => (
+                <button
+                  key={variant.id}
+                  onClick={() => handleVariantSelect(variant)}
+                  disabled={!variant.available || variant.stock === 0}
+                  className={`variant-option ${selectedVariant?.id === variant.id ? 'selected' : ''} ${!variant.available || variant.stock === 0 ? 'unavailable' : ''}`}
+                  title={`${variant.color}${variant.size ? ` - ${variant.size}` : ''} - ${variant.stock} disponibles`}
+                >
+                  <div className="variant-color-circle" style={{ backgroundColor: getColorHex(variant.color) }}></div>
+                  <div className="variant-info">
+                    <span className="variant-name">{variant.color}</span>
+                    {variant.size && <span className="variant-size">{variant.size}</span>}
+                    <span className="variant-stock">
+                      {variant.stock > 0 ? `${variant.stock} disponibles` : 'Agotado'}
+                    </span>
+                  </div>
+                  {selectedVariant?.id === variant.id && (
+                    <div className="variant-checkmark">✓</div>
+                  )}
+                </button>
+              ))}
+            </div>
+            
+            {/* Información de la variante seleccionada */}
+            {selectedVariant && (
+              <div className="selected-variant-info">
+                <span className="info-label">Seleccionado:</span>
+                <span className="info-value">
+                  {selectedVariant.color}
+                  {selectedVariant.size && ` - ${selectedVariant.size}`}
+                  {' '}({selectedVariant.stock} disponibles)
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+        
         <div className="product-detail-haversack-cantidad">
           <span>Cantidad</span>
           <div className="cart-item-controls">
