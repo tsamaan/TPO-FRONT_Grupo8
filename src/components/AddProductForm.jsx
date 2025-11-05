@@ -7,15 +7,23 @@ const AddProductForm = ({ onProductAdded }) => {
     name: '',
     description: '',
     images: [],
-    stock: 0,
     price: 0,
     category: '',
     tags: [],
-    colores: []
+    variants: [] // Array de variantes con color, stock, SKU, etc.
   });
 
   const [currentImageUrl, setCurrentImageUrl] = useState('');
-  const [currentColor, setCurrentColor] = useState('');
+  
+  // Estado para la variante actual que se está agregando
+  const [currentVariant, setCurrentVariant] = useState({
+    color: '',
+    size: '',
+    stock: 0,
+    sku: '',
+    imageUrl: '',
+    priceModifier: 0
+  });
 
   const [errors, setErrors] = useState({});
 
@@ -24,10 +32,10 @@ const AddProductForm = ({ onProductAdded }) => {
       const newErrors = {};
       if (!product.name) newErrors.name = 'El nombre es obligatorio.';
       if (!product.description) newErrors.description = 'La descripción es obligatoria.';
-      if (product.stock < 0) newErrors.stock = 'El stock no puede ser negativo.';
       if (product.price <= 0) newErrors.price = 'El precio debe ser mayor que cero.';
       if (!product.category) newErrors.category = 'La categoría es obligatoria.';
       if (!product.images || product.images.length === 0) newErrors.images = 'Debe agregar al menos una imagen.';
+      if (!product.variants || product.variants.length === 0) newErrors.variants = 'Debe agregar al menos una variante (color/stock).';
       
       setErrors(newErrors);
     };
@@ -43,20 +51,41 @@ const AddProductForm = ({ onProductAdded }) => {
     }));
   };
 
-  const addColor = () => {
-    if (currentColor.trim() && !product.colores.includes(currentColor.trim())) {
+  const handleVariantChange = (e) => {
+    const { name, value } = e.target;
+    setCurrentVariant(prev => ({
+      ...prev,
+      [name]: ['stock', 'priceModifier'].includes(name) ? parseFloat(value) || 0 : value
+    }));
+  };
+
+  const addVariant = () => {
+    if (currentVariant.color.trim() && currentVariant.stock >= 0) {
+      // Generar SKU automático si no se proporciona
+      const sku = currentVariant.sku.trim() || 
+                  `${product.name.substring(0, 3).toUpperCase()}-${currentVariant.color.toUpperCase()}-${Date.now()}`;
+      
       setProduct(prevProduct => ({
         ...prevProduct,
-        colores: [...prevProduct.colores, currentColor.trim()]
+        variants: [...prevProduct.variants, { ...currentVariant, sku, available: true }]
       }));
-      setCurrentColor('');
+      
+      // Limpiar formulario de variante
+      setCurrentVariant({
+        color: '',
+        size: '',
+        stock: 0,
+        sku: '',
+        imageUrl: '',
+        priceModifier: 0
+      });
     }
   };
 
-  const removeColor = (index) => {
+  const removeVariant = (index) => {
     setProduct(prevProduct => ({
       ...prevProduct,
-      colores: prevProduct.colores.filter((_, i) => i !== index)
+      variants: prevProduct.variants.filter((_, i) => i !== index)
     }));
   };
 
@@ -88,14 +117,20 @@ const AddProductForm = ({ onProductAdded }) => {
           name: '',
           description: '',
           images: [],
-          stock: 0,
           price: 0,
           category: '',
           tags: [],
-          colores: []
+          variants: []
         });
         setCurrentImageUrl('');
-        setCurrentColor('');
+        setCurrentVariant({
+          color: '',
+          size: '',
+          stock: 0,
+          sku: '',
+          imageUrl: '',
+          priceModifier: 0
+        });
       } catch (error) {
         alert('Error al crear el producto');
         console.error(error);
@@ -171,19 +206,7 @@ const AddProductForm = ({ onProductAdded }) => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="stock">Stock</label>
-        <input
-          type="number"
-          id="stock"
-          name="stock"
-          value={product.stock}
-          onChange={handleChange}
-        />
-        {errors.stock && <p className="error">{errors.stock}</p>}
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="price">Precio</label>
+        <label htmlFor="price">Precio Base</label>
         <input
           type="number"
           id="price"
@@ -193,6 +216,7 @@ const AddProductForm = ({ onProductAdded }) => {
           step="0.01"
         />
         {errors.price && <p className="error">{errors.price}</p>}
+        <small className="form-hint">El precio final puede variar según la variante (color/talla)</small>
       </div>
 
       <div className="form-group">
@@ -218,32 +242,152 @@ const AddProductForm = ({ onProductAdded }) => {
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="colores">Colores Disponibles</label>
-        <div className="color-input-group">
-          <input
-            type="text"
-            id="current-color"
-            placeholder="Nombre del color"
-            value={currentColor}
-            onChange={(e) => setCurrentColor(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addColor())}
-          />
-          <button type="button" onClick={addColor} disabled={!currentColor.trim() || product.colores.includes(currentColor.trim())}>
-            Agregar Color
+      {/* NUEVA SECCIÓN: VARIANTES */}
+      <div className="form-group variants-section">
+        <h3>Variantes del Producto</h3>
+        <p className="form-hint">Agrega diferentes combinaciones de color y stock para este producto</p>
+        
+        <div className="variant-input-group">
+          <div className="variant-row">
+            <div className="variant-field">
+              <label htmlFor="variant-color">Color *</label>
+              <input
+                type="text"
+                id="variant-color"
+                name="color"
+                placeholder="Ej: Rojo, Azul, Negro"
+                value={currentVariant.color}
+                onChange={handleVariantChange}
+              />
+            </div>
+            
+            <div className="variant-field">
+              <label htmlFor="variant-size">Talla (opcional)</label>
+              <input
+                type="text"
+                id="variant-size"
+                name="size"
+                placeholder="Ej: S, M, L, XL"
+                value={currentVariant.size}
+                onChange={handleVariantChange}
+              />
+            </div>
+            
+            <div className="variant-field">
+              <label htmlFor="variant-stock">Stock *</label>
+              <input
+                type="number"
+                id="variant-stock"
+                name="stock"
+                placeholder="0"
+                value={currentVariant.stock}
+                onChange={handleVariantChange}
+                min="0"
+              />
+            </div>
+          </div>
+          
+          <div className="variant-row">
+            <div className="variant-field">
+              <label htmlFor="variant-sku">SKU (opcional)</label>
+              <input
+                type="text"
+                id="variant-sku"
+                name="sku"
+                placeholder="Se genera automáticamente"
+                value={currentVariant.sku}
+                onChange={handleVariantChange}
+              />
+            </div>
+            
+            <div className="variant-field">
+              <label htmlFor="variant-price-modifier">Modificador de Precio</label>
+              <input
+                type="number"
+                id="variant-price-modifier"
+                name="priceModifier"
+                placeholder="0.00"
+                value={currentVariant.priceModifier}
+                onChange={handleVariantChange}
+                step="0.01"
+              />
+              <small>Ej: +50 o -20</small>
+            </div>
+            
+            <div className="variant-field">
+              <label htmlFor="variant-image-url">Imagen específica</label>
+              <input
+                type="text"
+                id="variant-image-url"
+                name="imageUrl"
+                placeholder="URL de imagen para esta variante"
+                value={currentVariant.imageUrl}
+                onChange={handleVariantChange}
+              />
+            </div>
+          </div>
+          
+          <button 
+            type="button" 
+            onClick={addVariant} 
+            className="btn-add-variant"
+            disabled={!currentVariant.color.trim() || currentVariant.stock < 0}
+          >
+            + Agregar Variante
           </button>
         </div>
 
-        {product.colores.length > 0 && (
-          <div className="colors-preview">
-            {product.colores.map((color, index) => (
-              <div key={index} className="color-item">
-                <span className="color-name">{color}</span>
-                <button type="button" onClick={() => removeColor(index)} className="color-remove">
-                  ×
-                </button>
-              </div>
-            ))}
+        {errors.variants && <p className="error">{errors.variants}</p>}
+
+        {product.variants.length > 0 && (
+          <div className="variants-list">
+            <h4>Variantes agregadas: ({product.variants.length})</h4>
+            <table className="variants-table">
+              <thead>
+                <tr>
+                  <th>Color</th>
+                  <th>Talla</th>
+                  <th>Stock</th>
+                  <th>SKU</th>
+                  <th>Precio</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {product.variants.map((variant, index) => (
+                  <tr key={index}>
+                    <td>
+                      <span className="color-badge" style={{backgroundColor: variant.color.toLowerCase()}}>
+                        {variant.color}
+                      </span>
+                    </td>
+                    <td>{variant.size || '-'}</td>
+                    <td>{variant.stock}</td>
+                    <td><code>{variant.sku}</code></td>
+                    <td>
+                      ${(product.price + (variant.priceModifier || 0)).toFixed(2)}
+                      {variant.priceModifier !== 0 && (
+                        <small className={variant.priceModifier > 0 ? 'price-increase' : 'price-decrease'}>
+                          ({variant.priceModifier > 0 ? '+' : ''}{variant.priceModifier})
+                        </small>
+                      )}
+                    </td>
+                    <td>
+                      <button 
+                        type="button" 
+                        onClick={() => removeVariant(index)} 
+                        className="btn-remove-variant"
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="variants-summary">
+              <strong>Stock Total:</strong> {product.variants.reduce((sum, v) => sum + v.stock, 0)} unidades
+            </div>
           </div>
         )}
       </div>

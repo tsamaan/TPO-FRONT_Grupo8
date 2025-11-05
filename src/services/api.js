@@ -141,6 +141,13 @@ export const createProduct = async (productData) => {
 
 export const updateProduct = async (id, productData) => {
   try {
+    console.log('🔄 API: Actualizando producto', { 
+      id, 
+      url: `${API_BASE_URL}/products/${id}`,
+      hasVariants: !!productData.variants,
+      variantsCount: productData.variants?.length || 0
+    });
+    
     const response = await fetch(`${API_BASE_URL}/products/${id}`, {
       method: 'PUT',
       headers: {
@@ -150,11 +157,16 @@ export const updateProduct = async (id, productData) => {
       body: JSON.stringify(productData),
     })
 
+    console.log('📡 Respuesta del servidor:', response.status, response.statusText);
+
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ Error del servidor:', errorText);
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
     const product = await response.json()
+    console.log('✅ Producto actualizado:', product);
     return product
   } catch (error) {
     console.error('Error updating product:', error)
@@ -320,6 +332,72 @@ export const registerAdmin = async (adminData) => {
     return await response.json();
   } catch (error) {
     console.error('Error registering admin:', error);
+    throw error;
+  }
+};
+
+// Obtener todos los usuarios (solo para admin/superadmin)
+export const getAllUsers = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/users`, {
+      headers: {
+        ...getAuthHeader(),
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const users = await response.json();
+    return Array.isArray(users) ? users : [];
+  } catch (error) {
+    console.error('Error fetching all users:', error);
+    throw error;
+  }
+};
+
+// Cambiar el rol de un usuario (solo para superadmin)
+export const changeUserRole = async (userId, newRole) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}/role`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify({ role: newRole }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error al cambiar rol de usuario');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error changing user role:', error);
+    throw error;
+  }
+};
+
+// Eliminar un usuario (solo para superadmin)
+export const deleteUser = async (userId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+      method: 'DELETE',
+      headers: {
+        ...getAuthHeader(),
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error deleting user:', error);
     throw error;
   }
 };

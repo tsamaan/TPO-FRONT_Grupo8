@@ -15,12 +15,12 @@ const ProtectedRoute = ({ children, requiredRole }) => {
     
     if (requiredRole === 'ADMIN') {
       // Admin y SuperAdmin pueden acceder
-      if (userRole !== 'ADMIN' && userRole !== 'SUPER_ADMIN') {
+      if (userRole !== 'ADMIN' && userRole !== 'SUPERADMIN') {
         return <Navigate to="/perfil" replace />;
       }
-    } else if (requiredRole === 'SUPER_ADMIN') {
+    } else if (requiredRole === 'SUPERADMIN') {
       // Solo SuperAdmin puede acceder
-      if (userRole !== 'SUPER_ADMIN') {
+      if (userRole !== 'SUPERADMIN') {
         return <Navigate to="/admin" replace />;
       }
     }

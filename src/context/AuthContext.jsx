@@ -68,12 +68,12 @@ export const AuthProvider = ({ children }) => {
 
   // Verificar si es admin o superadmin
   const isAdmin = () => {
-    return hasRole('ADMIN') || hasRole('SUPER_ADMIN');
+    return hasRole('ADMIN') || hasRole('SUPERADMIN');
   };
 
   // Verificar si es superadmin
   const isSuperAdmin = () => {
-    return hasRole('SUPER_ADMIN');
+    return hasRole('SUPERADMIN');
   };
 
   return (

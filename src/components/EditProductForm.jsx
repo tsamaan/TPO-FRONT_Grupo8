@@ -5,14 +5,23 @@ import './AddProductForm.css'; // Usando estilos compartidos
 const EditProductForm = ({ product: productToEdit, onProductUpdated, onCancel }) => {
   const [product, setProduct] = useState(productToEdit);
   const [currentImageUrl, setCurrentImageUrl] = useState('');
-  const [currentColor, setCurrentColor] = useState('');
+  
+  // Estado para la variante actual que se está agregando/editando
+  const [currentVariant, setCurrentVariant] = useState({
+    color: '',
+    size: '',
+    stock: 0,
+    sku: '',
+    imageUrl: '',
+    priceModifier: 0
+  });
 
   useEffect(() => {
-    // Asegurar que el producto tenga los campos images y colores como arrays
+    // Asegurar que el producto tenga los campos necesarios
     const updatedProduct = {
       ...productToEdit,
       images: productToEdit.images || (productToEdit.image ? [productToEdit.image] : []),
-      colores: productToEdit.colores || []
+      variants: productToEdit.variants || []
     };
     setProduct(updatedProduct);
   }, [productToEdit]);
@@ -23,6 +32,59 @@ const EditProductForm = ({ product: productToEdit, onProductUpdated, onCancel })
       ...prevProduct,
       [name]: name === 'tags' ? value.split(',').map(tag => tag.trim()) : value
     }));
+  };
+
+  const handleVariantChange = (e) => {
+    const { name, value } = e.target;
+    setCurrentVariant(prev => ({
+      ...prev,
+      [name]: ['stock', 'priceModifier'].includes(name) ? parseFloat(value) || 0 : value
+    }));
+  };
+
+  const addVariant = () => {
+    if (currentVariant.color.trim() && currentVariant.stock >= 0) {
+      // Generar SKU automático si no se proporciona
+      const sku = currentVariant.sku.trim() || 
+                  `${product.name.substring(0, 3).toUpperCase()}-${currentVariant.color.toUpperCase()}-${Date.now()}`;
+      
+      setProduct(prevProduct => ({
+        ...prevProduct,
+        variants: [...(prevProduct.variants || []), { ...currentVariant, sku, available: true }]
+      }));
+      
+      // Limpiar formulario de variante
+      setCurrentVariant({
+        color: '',
+        size: '',
+        stock: 0,
+        sku: '',
+        imageUrl: '',
+        priceModifier: 0
+      });
+    }
+  };
+
+  const removeVariant = (index) => {
+    setProduct(prevProduct => ({
+      ...prevProduct,
+      variants: (prevProduct.variants || []).filter((_, i) => i !== index)
+    }));
+  };
+
+  // Nueva función para actualizar una variante existente
+  const updateVariant = (index, field, value) => {
+    setProduct(prevProduct => {
+      const updatedVariants = [...(prevProduct.variants || [])];
+      updatedVariants[index] = {
+        ...updatedVariants[index],
+        [field]: ['stock', 'priceModifier'].includes(field) ? parseFloat(value) || 0 : value
+      };
+      return {
+        ...prevProduct,
+        variants: updatedVariants
+      };
+    });
   };
 
   const addImage = () => {
@@ -42,32 +104,24 @@ const EditProductForm = ({ product: productToEdit, onProductUpdated, onCancel })
     }));
   };
 
-  const addColor = () => {
-    if (currentColor.trim() && !(product.colores || []).includes(currentColor.trim())) {
-      setProduct(prevProduct => ({
-        ...prevProduct,
-        colores: [...(prevProduct.colores || []), currentColor.trim()]
-      }));
-      setCurrentColor('');
-    }
-  };
-
-  const removeColor = (index) => {
-    setProduct(prevProduct => ({
-      ...prevProduct,
-      colores: (prevProduct.colores || []).filter((_, i) => i !== index)
-    }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Debug: Verificar el ID y los datos del producto
+    console.log('📦 Actualizando producto:', {
+      id: product.id,
+      name: product.name,
+      variantsCount: product.variants?.length || 0,
+      variants: product.variants
+    });
+    
     try {
       await updateProduct(product.id, product);
       alert('Producto actualizado con éxito');
       onProductUpdated();
     } catch (error) {
-      alert('Error al actualizar el producto');
-      console.error(error);
+      alert(`Error al actualizar el producto: ${error.message}`);
+      console.error('❌ Error completo:', error);
     }
   };
 
@@ -140,19 +194,7 @@ const EditProductForm = ({ product: productToEdit, onProductUpdated, onCancel })
       </div>
 
       <div className="form-group">
-        <label htmlFor="stock">Stock</label>
-        <input
-          type="number"
-          id="stock"
-          name="stock"
-          value={product.stock}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="price">Precio</label>
+        <label htmlFor="price">Precio Base</label>
         <input
           type="number"
           id="price"
@@ -162,6 +204,7 @@ const EditProductForm = ({ product: productToEdit, onProductUpdated, onCancel })
           step="0.01"
           required
         />
+        <small className="form-hint">El precio final puede variar según la variante (color/talla)</small>
       </div>
 
       <div className="form-group">
@@ -187,39 +230,213 @@ const EditProductForm = ({ product: productToEdit, onProductUpdated, onCancel })
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="colores">Colores Disponibles</label>
-        <div className="color-input-group">
-          <input
-            type="text"
-            id="current-color"
-            placeholder="Nombre del color"
-            value={currentColor}
-            onChange={(e) => setCurrentColor(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addColor())}
-          />
-          <button type="button" onClick={addColor} disabled={!currentColor.trim() || (product.colores || []).includes(currentColor.trim())}>
-            Agregar Color
+      {/* SECCIÓN: VARIANTES */}
+      <div className="form-group variants-section">
+        <h3>Variantes del Producto</h3>
+        <p className="form-hint">Gestiona las combinaciones de color y stock para este producto</p>
+        
+        <div className="variant-input-group">
+          <div className="variant-row">
+            <div className="variant-field">
+              <label htmlFor="variant-color">Color *</label>
+              <input
+                type="text"
+                id="variant-color"
+                name="color"
+                placeholder="Ej: Rojo, Azul, Negro"
+                value={currentVariant.color}
+                onChange={handleVariantChange}
+              />
+            </div>
+            
+            <div className="variant-field">
+              <label htmlFor="variant-size">Talla (opcional)</label>
+              <input
+                type="text"
+                id="variant-size"
+                name="size"
+                placeholder="Ej: S, M, L, XL"
+                value={currentVariant.size}
+                onChange={handleVariantChange}
+              />
+            </div>
+            
+            <div className="variant-field">
+              <label htmlFor="variant-stock">Stock *</label>
+              <input
+                type="number"
+                id="variant-stock"
+                name="stock"
+                placeholder="0"
+                value={currentVariant.stock}
+                onChange={handleVariantChange}
+                min="0"
+              />
+            </div>
+          </div>
+          
+          <div className="variant-row">
+            <div className="variant-field">
+              <label htmlFor="variant-sku">SKU (opcional)</label>
+              <input
+                type="text"
+                id="variant-sku"
+                name="sku"
+                placeholder="Se genera automáticamente"
+                value={currentVariant.sku}
+                onChange={handleVariantChange}
+              />
+            </div>
+            
+            <div className="variant-field">
+              <label htmlFor="variant-price-modifier">Modificador de Precio</label>
+              <input
+                type="number"
+                id="variant-price-modifier"
+                name="priceModifier"
+                placeholder="0.00"
+                value={currentVariant.priceModifier}
+                onChange={handleVariantChange}
+                step="0.01"
+              />
+              <small>Ej: +50 o -20</small>
+            </div>
+            
+            <div className="variant-field">
+              <label htmlFor="variant-image-url">Imagen específica</label>
+              <input
+                type="text"
+                id="variant-image-url"
+                name="imageUrl"
+                placeholder="URL de imagen para esta variante"
+                value={currentVariant.imageUrl}
+                onChange={handleVariantChange}
+              />
+            </div>
+          </div>
+          
+          <button 
+            type="button" 
+            onClick={addVariant} 
+            className="btn-add-variant"
+            disabled={!currentVariant.color.trim() || currentVariant.stock < 0}
+          >
+            + Agregar Variante
           </button>
         </div>
 
-        {product.colores && product.colores.length > 0 && (
-          <div className="colors-preview">
-            {product.colores.map((color, index) => (
-              <div key={index} className="color-item">
-                <span className="color-name">{color}</span>
-                <button type="button" onClick={() => removeColor(index)} className="color-remove">
-                  ×
-                </button>
-              </div>
-            ))}
+        {product.variants && product.variants.length > 0 && (
+          <div className="variants-list">
+            <h4>Variantes actuales: ({product.variants.length})</h4>
+            <table className="variants-table">
+              <thead>
+                <tr>
+                  <th>Color</th>
+                  <th>Talla</th>
+                  <th>Stock</th>
+                  <th>SKU</th>
+                  <th>Precio Base + Modificador</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {product.variants.map((variant, index) => (
+                  <tr key={index}>
+                    <td>
+                      <input
+                        type="text"
+                        value={variant.color}
+                        onChange={(e) => updateVariant(index, 'color', e.target.value)}
+                        className="inline-edit"
+                        style={{
+                          backgroundColor: variant.color.toLowerCase(),
+                          color: '#fff',
+                          fontWeight: 'bold',
+                          padding: '4px 8px',
+                          border: '1px solid #ddd',
+                          borderRadius: '4px'
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={variant.size || ''}
+                        onChange={(e) => updateVariant(index, 'size', e.target.value)}
+                        placeholder="-"
+                        className="inline-edit"
+                        style={{ width: '60px', textAlign: 'center' }}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        value={variant.stock}
+                        onChange={(e) => updateVariant(index, 'stock', e.target.value)}
+                        min="0"
+                        className="inline-edit stock-input"
+                        style={{ 
+                          width: '70px', 
+                          textAlign: 'center',
+                          fontWeight: 'bold',
+                          fontSize: '1rem'
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={variant.sku}
+                        onChange={(e) => updateVariant(index, 'sku', e.target.value)}
+                        className="inline-edit"
+                        style={{ width: '120px', fontFamily: 'monospace', fontSize: '0.9rem' }}
+                      />
+                    </td>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span>${product.price.toFixed(2)}</span>
+                        <input
+                          type="number"
+                          value={variant.priceModifier || 0}
+                          onChange={(e) => updateVariant(index, 'priceModifier', e.target.value)}
+                          step="0.01"
+                          className="inline-edit"
+                          style={{ width: '70px' }}
+                          placeholder="0"
+                        />
+                        <span style={{ fontWeight: 'bold' }}>
+                          = ${(product.price + (variant.priceModifier || 0)).toFixed(2)}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <button 
+                        type="button" 
+                        onClick={() => removeVariant(index)} 
+                        className="btn-remove-variant"
+                        title="Eliminar variante"
+                      >
+                        🗑️
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="variants-summary">
+              <strong>Stock Total:</strong> {product.variants.reduce((sum, v) => sum + v.stock, 0)} unidades
+            </div>
           </div>
         )}
       </div>
 
       <div className="form-actions">
-        <button type="submit">Guardar Cambios</button>
-        <button type="button" onClick={onCancel}>Cancelar</button>
+        <button type="button" onClick={onCancel} style={{background: '#6c757d'}}>
+          Cancelar
+        </button>
+        <button type="submit">
+          Actualizar Producto
+        </button>
       </div>
     </form>
   );

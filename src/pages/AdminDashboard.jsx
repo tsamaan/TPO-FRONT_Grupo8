@@ -3,6 +3,7 @@ import { fetchProducts, deleteProduct, registerAdmin } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import AddProductForm from '../components/AddProductForm';
 import EditProductForm from '../components/EditProductForm';
+import UserManagement from '../components/UserManagement';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -12,6 +13,7 @@ const AdminDashboard = () => {
   const [error, setError] = useState(null);
   const [editingProduct, setEditingProduct] = useState(null);
   const [showRegisterAdmin, setShowRegisterAdmin] = useState(false);
+  const [activeTab, setActiveTab] = useState('products'); // 'products' o 'users'
   const [adminFormData, setAdminFormData] = useState({
     email: '',
     password: '',
@@ -118,6 +120,7 @@ const AdminDashboard = () => {
         <div>
           <h1>Panel de Administración</h1>
           <p className="admin-welcome">Bienvenido, {user?.name || user?.email}</p>
+          {isSuperAdmin() && <span className="admin-badge">SUPERADMIN</span>}
         </div>
         <div className="admin-actions">
           {isSuperAdmin() && (
@@ -130,6 +133,24 @@ const AdminDashboard = () => {
           )}
           <button onClick={logout} className="btn btn--logout">Cerrar Sesión</button>
         </div>
+      </div>
+
+      {/* Tabs de navegación */}
+      <div className="admin-tabs">
+        <button 
+          className={`admin-tab ${activeTab === 'products' ? 'admin-tab--active' : ''}`}
+          onClick={() => setActiveTab('products')}
+        >
+          Gestión de Productos
+        </button>
+        {isSuperAdmin() && (
+          <button 
+            className={`admin-tab ${activeTab === 'users' ? 'admin-tab--active' : ''}`}
+            onClick={() => setActiveTab('users')}
+          >
+            Gestión de Usuarios
+          </button>
+        )}
       </div>
 
       {isSuperAdmin() && showRegisterAdmin && (
@@ -215,48 +236,55 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      {editingProduct ? (
-        <EditProductForm
-          product={editingProduct}
-          onProductUpdated={handleProductUpdated}
-          onCancel={handleCancelEdit}
-        />
-      ) : (
-        <AddProductForm onProductAdded={handleProductAdded} />
-      )}
+      {/* Contenido según el tab activo */}
+      {activeTab === 'products' ? (
+        <>
+          {editingProduct ? (
+            <EditProductForm
+              product={editingProduct}
+              onProductUpdated={handleProductUpdated}
+              onCancel={handleCancelEdit}
+            />
+          ) : (
+            <AddProductForm onProductAdded={handleProductAdded} />
+          )}
 
-      <div className="product-list-admin">
-        <h2>Listado de Productos</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Imagen</th>
-              <th>Nombre</th>
-              <th>Stock</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map(product => (
-              <tr key={product.id}>
-                <td>{product.id}</td>
-                <td>
-                  {(product.images?.[0] || product.image) && (
-                    <img src={product.images?.[0] || product.image} alt={product.name} className="product-list-admin__image" />
-                  )}
-                </td>
-                <td>{product.name}</td>
-                <td>{product.stock}</td>
-                <td>
-                  <button onClick={() => handleEdit(product)} className="btn btn--edit">Editar</button>
-                  <button onClick={() => handleDelete(product.id)} className="btn btn--delete">Eliminar</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          <div className="product-list-admin">
+            <h2>Listado de Productos</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Imagen</th>
+                  <th>Nombre</th>
+                  <th>Stock</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map(product => (
+                  <tr key={product.id}>
+                    <td>{product.id}</td>
+                    <td>
+                      {(product.images?.[0] || product.image) && (
+                        <img src={product.images?.[0] || product.image} alt={product.name} className="product-list-admin__image" />
+                      )}
+                    </td>
+                    <td>{product.name}</td>
+                    <td>{product.stock}</td>
+                    <td>
+                      <button onClick={() => handleEdit(product)} className="btn btn--edit">Editar</button>
+                      <button onClick={() => handleDelete(product.id)} className="btn btn--delete">Eliminar</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      ) : (
+        <UserManagement />
+      )}
     </main>
   );
 };
