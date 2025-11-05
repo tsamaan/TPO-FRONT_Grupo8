@@ -9,6 +9,7 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import UserDashboard from './pages/UserDashboard';
+import OrderHistoryPage from './pages/OrderHistoryPage';
 import Navbar from './components/Navbar/Navbar';
 import CartWidget from './components/Carrito/CartWidget';
 import CartSidebar from './components/CartSidebar';
@@ -113,6 +114,14 @@ function MainRoutes(props) {
                   element={
                     <ProtectedRoute>
                       <UserDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/mis-compras"
+                  element={
+                    <ProtectedRoute>
+                      <OrderHistoryPage />
                     </ProtectedRoute>
                   }
                 />

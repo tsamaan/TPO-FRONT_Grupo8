@@ -27,10 +27,17 @@ const LoginForm = ({ onShowRegister }) => {
 		}
 	}, [isAuthenticated, user, navigate]);
 
+	const handleGoHome = () => {
+		navigate('/');
+	};
+
 	return (
 		<div className="login-form-wrapper">
 			<form className="login-form-card" onSubmit={handleSubmit}>
-				<div className="login-form-title">Iniciar sesión</div>
+				<div className="login-form-header">
+					<div className="login-form-title">Iniciar sesión</div>
+					<div className="login-form-subtitle">Accedé a tu cuenta para continuar</div>
+				</div>
 				<div className="login-form-group">
 					<label htmlFor="email" className="login-form-label">Email</label>
 					<input
@@ -57,14 +64,15 @@ const LoginForm = ({ onShowRegister }) => {
 						autoComplete="current-password"
 					/>
 				</div>
+				{error && <div className="login-form-error">{error}</div>}
 				<div className="login-form-footer">
 					<button type="submit" className="login-form-btn">Iniciar sesión</button>
+					<button type="button" className="login-home-btn" onClick={handleGoHome}>Volver al inicio</button>
 				</div>
 				<div className="login-form-bottom">
 					<span>¿No tenés cuenta?</span>
 					<button type="button" className="login-form-link" onClick={onShowRegister}>Registrate</button>
 				</div>
-				{error && <div className="login-form-error">{error}</div>}
 			</form>
 		</div>
 	);

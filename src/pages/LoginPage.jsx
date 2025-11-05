@@ -26,7 +26,11 @@ const LoginPage = () => {
 
   return (
     <div>
-      <LoginForm onShowRegister={() => navigate('/registro')} />
+      {showRegister ? (
+        <RegisterForm onShowLogin={() => navigate('/login')} />
+      ) : (
+        <LoginForm onShowRegister={() => navigate('/registro')} />
+      )}
     </div>
   );
 };

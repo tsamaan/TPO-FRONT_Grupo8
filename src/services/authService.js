@@ -56,14 +56,12 @@ export async function registerService(data) {
       body: JSON.stringify({
         email: data.email,
         password: data.password,
+        confirmPassword: data.confirmPassword,
         nombre: data.nombre,
         apellido: data.apellido,
         name: `${data.nombre} ${data.apellido}`,
         phone: data.phone || '',
-        // El backend espera una dirección embebida
-        direccion: {
-          calle: data.address || ''
-        }
+        address: data.address || ''
       }),
     })
 
@@ -77,8 +75,8 @@ export async function registerService(data) {
 
     const result = await response.json()
     
-    // El backend devuelve el usuario creado
-    if (result.id) {
+    // El backend devuelve { success: true, message: "...", user: {...} }
+    if (result.success && result.user) {
       return { 
         success: true,
         message: "Usuario registrado exitosamente" 

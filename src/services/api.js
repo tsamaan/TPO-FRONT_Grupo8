@@ -281,6 +281,25 @@ export const fetchUserOrders = async (userId) => {
   }
 };
 
+// Obtener órdenes por email (incluye compras hechas sin estar logueado)
+export const getOrdersByEmail = async (email) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/orders/email/${encodeURIComponent(email)}`, {
+      headers: {
+        ...getAuthHeader(),
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const orders = await response.json();
+    return Array.isArray(orders) ? orders : [];
+  } catch (error) {
+    console.error('Error fetching orders by email:', error);
+    throw error;
+  }
+};
+
 // Registrar un nuevo admin (solo para super admin)
 export const registerAdmin = async (adminData) => {
   try {

@@ -34,9 +34,14 @@ const Navbar = () => {
             </NavLink>
           )}
           {isAuthenticated && !isAdmin() && (
-            <NavLink to="/perfil" className="navbar__link">
-              Mi Perfil
-            </NavLink>
+            <>
+              <NavLink to="/perfil" className="navbar__link">
+                Mi Perfil
+              </NavLink>
+              <NavLink to="/mis-compras" className="navbar__link">
+                Mis Compras
+              </NavLink>
+            </>
           )}
         </nav>
       </div>
