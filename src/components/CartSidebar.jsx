@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { updateProduct, getProductById, createOrder } from '../services/api';
 import './CartSidebar.css';
@@ -9,6 +10,7 @@ import './CartSidebar.css';
 const CartSidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const { cart, removeFromCart, addToCart, calculateTotal, clearCart } = useCart();
+  const { user } = useAuth();
 
   // Simulación de stock en memoria (solo para frontend)
   const stockMap = React.useRef({});
@@ -49,7 +51,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
     });
   };
 
-  // Primer paso: validar stock y mostrar formulario
+  // Primer paso: validar stock y proceder al checkout
   const handleBuy = async () => {
     try {
       const stockCheck = await Promise.all(
@@ -63,22 +65,28 @@ const CartSidebar = ({ isOpen, onClose }) => {
         alert('No hay suficiente stock disponible para uno o más productos. Actualiza la página y vuelve a intentar.');
         return;
       }
-      setShowUserForm(true);
+      
+      // Si el usuario está logueado, finalizar compra directamente
+      if (user) {
+        await finalizarCompra({
+          nombre: user.nombre,
+          apellido: user.apellido,
+          email: user.email,
+          telefono: user.phone || ''
+        });
+      } else {
+        // Si no está logueado, mostrar formulario
+        setShowUserForm(true);
+      }
     } catch (err) {
       alert('Error al validar el stock en la API');
     }
   };
 
-  // Segundo paso: validar datos y stock, reducir stock y finalizar compra
-  const handleUserFormSubmit = async (e) => {
-    e.preventDefault();
-    if (!userData.nombre || !userData.apellido || !userData.email || !userData.telefono) {
-      setFormError('Todos los campos son obligatorios');
-      return;
-    }
-    setFormError('');
-    // Volver a chequear stock antes de finalizar
+  // Función centralizada para finalizar la compra
+  const finalizarCompra = async (datosUsuario) => {
     try {
+      // Volver a chequear stock antes de finalizar
       const stockCheck = await Promise.all(
         cart.map(async item => {
           const productoApi = await getProductById(item.id);
@@ -91,28 +99,29 @@ const CartSidebar = ({ isOpen, onClose }) => {
         setShowUserForm(false);
         return;
       }
+      
       // Guardar la orden en la API
       const orderData = {
-        ...userData,
+        ...datosUsuario,
         productos: cart.map(item => ({
           id: item.id,
+          variantId: item.variantId, // ID de la variante (para reducir stock del color específico)
+          sku: item.sku, // SKU único de la variante
           name: item.name,
           cantidad: item.quantity,
-          precio: item.price
+          precio: item.price,
+          color: item.color,
+          size: item.size
         })),
         total: calculateTotal(),
         fecha: new Date().toISOString()
       };
-      await createOrder(orderData);
-      await Promise.all(
-        cart.map(async item => {
-          const productoApi = await getProductById(item.id);
-          const nuevoStock = productoApi.stock - item.quantity;
-          await updateProduct(item.id, { ...productoApi, stock: nuevoStock });
-          stockMap.current[item.id] = nuevoStock;
-        })
-      );
-      reduceStock();
+      
+      // Usar el endpoint correcto según si está autenticado
+      // El backend se encargará de reducir el stock de cada variante
+      await createOrder(orderData, !!user);
+      
+      // Limpiar carrito después de crear la orden exitosamente
       clearCart();
       alert('¡Compra generada con éxito!');
       setShowUserForm(false);
@@ -120,8 +129,20 @@ const CartSidebar = ({ isOpen, onClose }) => {
       navigate('/');
       window.location.reload();
     } catch (err) {
-      alert('Error al validar o actualizar el stock en la API');
+      alert('Error al procesar la compra. Por favor intenta nuevamente.');
+      console.error(err);
     }
+  };
+
+  // Segundo paso: validar datos del formulario y finalizar compra
+  const handleUserFormSubmit = async (e) => {
+    e.preventDefault();
+    if (!userData.nombre || !userData.apellido || !userData.email || !userData.telefono) {
+      setFormError('Todos los campos son obligatorios');
+      return;
+    }
+    setFormError('');
+    await finalizarCompra(userData);
   };
 
   const handleUserInputChange = (e) => {
@@ -179,7 +200,9 @@ const CartSidebar = ({ isOpen, onClose }) => {
             <span>Calculálo arriba para verlo</span>
           </div>
           {!showUserForm && (
-            <button className="cart-buy-btn" onClick={handleBuy}>FINALIZAR COMPRA</button>
+            <button className="cart-buy-btn" onClick={handleBuy}>
+              {user ? 'FINALIZAR COMPRA' : 'FINALIZAR COMPRA (INGRESAR DATOS)'}
+            </button>
           )}
           {showUserForm && (
             <form className="cart-user-form" onSubmit={handleUserFormSubmit} style={{

@@ -72,15 +72,25 @@ export const getProductById = async (id) => {
   }
 };
 
-export const createOrder = async (orderData) => {
+export const createOrder = async (orderData, isAuthenticated = false) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/orders`, {
+    // Usar endpoint diferente según si está autenticado
+    const endpoint = isAuthenticated ? '/orders' : '/orders/guest';
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    
+    // Solo agregar token si está autenticado
+    if (isAuthenticated) {
+      Object.assign(headers, getAuthHeader());
+    }
+    
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: headers,
       body: JSON.stringify(orderData),
     });
+    
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
