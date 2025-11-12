@@ -72,7 +72,7 @@
   border-color: #9ca3af;
 }
 
-/* Círculo agotado - con línea diagonal */
+/* Circulo agotado - con linea diagonal */
 .product-card-color-circle.out-of-stock {
   opacity: 0.4;
   cursor: not-allowed;

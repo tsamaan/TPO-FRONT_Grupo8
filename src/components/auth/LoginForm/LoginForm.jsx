@@ -14,7 +14,7 @@ const LoginForm = ({ onShowRegister }) => {
 		await login(email, password);
 	};
 
-	// Redirigir según el rol después del login
+	// Redirigir segun el rol despues del login
 	useEffect(() => {
 		if (isAuthenticated && user) {
 			const userRole = user.role || user.roles?.[0];
@@ -35,8 +35,8 @@ const LoginForm = ({ onShowRegister }) => {
 		<div className="login-form-wrapper">
 			<form className="login-form-card" onSubmit={handleSubmit}>
 				<div className="login-form-header">
-					<div className="login-form-title">Iniciar sesión</div>
-					<div className="login-form-subtitle">Accedé a tu cuenta para continuar</div>
+					<div className="login-form-title">Iniciar sesion</div>
+					<div className="login-form-subtitle">Accede a tu cuenta para continuar</div>
 				</div>
 				<div className="login-form-group">
 					<label htmlFor="email" className="login-form-label">Email</label>
@@ -46,7 +46,7 @@ const LoginForm = ({ onShowRegister }) => {
 						className="login-form-input"
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
-						placeholder="Ingresá tu email"
+						placeholder="Ingresa tu email"
 						required
 						autoComplete="email"
 					/>
@@ -59,18 +59,18 @@ const LoginForm = ({ onShowRegister }) => {
 						className="login-form-input"
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
-						placeholder="Ingresá tu contraseña"
+						placeholder="Ingresa tu contraseña"
 						required
 						autoComplete="current-password"
 					/>
 				</div>
 				{error && <div className="login-form-error">{error}</div>}
 				<div className="login-form-footer">
-					<button type="submit" className="login-form-btn">Iniciar sesión</button>
+					<button type="submit" className="login-form-btn">Iniciar sesion</button>
 					<button type="button" className="login-home-btn" onClick={handleGoHome}>Volver al inicio</button>
 				</div>
 				<div className="login-form-bottom">
-					<span>¿No tenés cuenta?</span>
+					<span>¿No tenes cuenta?</span>
 					<button type="button" className="login-form-link" onClick={onShowRegister}>Registrate</button>
 				</div>
 			</form>

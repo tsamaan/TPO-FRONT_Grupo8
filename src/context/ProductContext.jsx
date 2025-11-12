@@ -29,7 +29,7 @@ export const ProductProvider = ({ children }) => {
     selectedTags: []
   });
 
-  // Cargar productos y categorías al montar
+  // Cargar productos y categorias al montar
   useEffect(() => {
     loadData();
   }, []);
@@ -63,7 +63,7 @@ export const ProductProvider = ({ children }) => {
   const applyFilters = useCallback(() => {
     let result = [...products];
 
-    // Filtrar por categoría
+    // Filtrar por categoria
     if (filters.category && filters.category !== '') {
       result = result.filter(product => 
         product.category?.name?.toLowerCase() === filters.category.toLowerCase()
@@ -86,7 +86,7 @@ export const ProductProvider = ({ children }) => {
       );
     }
 
-    // Filtrar por búsqueda
+    // Filtrar por busqueda
     if (filters.searchTerm && filters.searchTerm.trim() !== '') {
       const searchLower = filters.searchTerm.toLowerCase();
       result = result.filter(product =>
@@ -109,6 +109,22 @@ export const ProductProvider = ({ children }) => {
         break;
       case 'price-desc':
         result.sort((a, b) => (b.price || 0) - (a.price || 0));
+        break;
+      case 'name-desc':
+        result.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
+        break;
+      case 'newest':
+        // Ordenar por ID descendente (asumiendo que IDs más altos = más nuevos)
+        result.sort((a, b) => (b.id || 0) - (a.id || 0));
+        break;
+      case 'popular':
+        // Ordenar por cantidad de ventas/popularidad (si existe ese campo)
+        // Si no tienes este campo, puedes usar otro criterio
+        result.sort((a, b) => {
+          const salesA = a.sales || a.soldCount || 0;
+          const salesB = b.sales || b.soldCount || 0;
+          return salesB - salesA;
+        });
         break;
       case 'name':
       default:
@@ -156,12 +172,12 @@ export const ProductProvider = ({ children }) => {
     });
   }, []);
 
-  // Función para obtener un producto por ID
+  // Funcion para obtener un producto por ID
   const getProductById = useCallback((id) => {
     return products.find(product => product.id === id);
   }, [products]);
 
-  // Función para refrescar productos
+  // Funcion para refrescar productos
   const refreshProducts = useCallback(async () => {
     await loadData();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

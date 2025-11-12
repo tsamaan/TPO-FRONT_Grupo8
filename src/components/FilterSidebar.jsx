@@ -26,11 +26,11 @@ const FilterSidebar = ({ isOpen, onClose, products, onFilterChange }) => {
     { value: 'name-desc', label: 'Nombre Z-A' },
     { value: 'price-asc', label: 'Precio: Menor a Mayor' },
     { value: 'price-desc', label: 'Precio: Mayor a Menor' },
-    { value: 'newest', label: 'Más Nuevos' },
-    { value: 'popular', label: 'Más Vendidos' }
+    { value: 'newest', label: 'Mas Nuevos' },
+    { value: 'popular', label: 'Mas Vendidos' }
   ];
 
-  // Extraer colores únicos y contar productos por color
+  // Extraer colores unicos y contar productos por color
   const getAvailableColors = () => {
     const colorCounts = {};
     products.forEach(product => {
@@ -43,7 +43,7 @@ const FilterSidebar = ({ isOpen, onClose, products, onFilterChange }) => {
     return Object.entries(colorCounts).map(([color, count]) => ({ color, count }));
   };
 
-  // Extraer tags únicos y contar productos por tag
+  // Extraer tags unicos y contar productos por tag
   const getAvailableTags = () => {
     const tagCounts = {};
     products.forEach(product => {
@@ -140,9 +140,9 @@ const FilterSidebar = ({ isOpen, onClose, products, onFilterChange }) => {
             </select>
           </div>
 
-          {/* Categorías */}
+          {/* Categorias */}
           <div className="filter-section">
-            <h3>CATEGORÍAS</h3>
+            <h3>CATEGORiAS</h3>
             <div className="category-links">
               {categorias.map(cat => (
                 <Link
@@ -236,7 +236,7 @@ const FilterSidebar = ({ isOpen, onClose, products, onFilterChange }) => {
             </div>
           </div>
 
-          {/* Botón limpiar filtros */}
+          {/* Boton limpiar filtros */}
           <div className="filter-section">
             <button className="clear-filters-button" onClick={clearFilters}>
               Limpiar Filtros

@@ -41,7 +41,7 @@ export const CartProvider = ({ children }) => {
                 };
                 return updatedCart;
             } else if (quantity > 0) {
-                // Agregar nuevo item con un ID único para el carrito
+                // Agregar nuevo item con un ID unico para el carrito
                 return [...currentCart, { 
                     ...product, 
                     quantity,
@@ -87,9 +87,9 @@ export const CartProvider = ({ children }) => {
         }, 0);
     };
 
-    // Checkout (sincronización con API pendiente)
+    // Checkout (sincronizacion con API pendiente)
     const checkout = async () => {
-        // ...igual que antes, pendiente de integración API
+        // ...igual que antes, pendiente de integracion API
         clearCart();
         return {
             success: true,

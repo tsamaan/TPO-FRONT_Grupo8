@@ -14,7 +14,6 @@ import Navbar from './components/Navbar/Navbar';
 import CartWidget from './components/Carrito/CartWidget';
 import CartSidebar from './components/CartSidebar';
 import ProductsPage from './pages/ProductsPage'
-import ContactPage from './pages/ContactPage'
 import Footer from './components/Footer/Footer'
 import FilterWidget from './components/FilterWidget'
 
@@ -84,7 +83,7 @@ function MainRoutes(props) {
     handleProductCountChange
   } = props;
 
-  // Mostrar filtro en listado de productos y categorías (incluye /productos/categoria/:categoria)
+  // Mostrar filtro en listado de productos y categorias (incluye /productos/categoria/:categoria)
   const showFilterWidget = (
     location.pathname === '/productos' ||
     location.pathname.startsWith('/productos/categoria/') ||
@@ -136,7 +135,6 @@ function MainRoutes(props) {
                 <Route path="/productos" element={<ProductsPage filterOpen={filterOpen} onFilterClose={handleFilterClose} onProductCountChange={handleProductCountChange} />} />
                 <Route path="/productos/categoria/:categoria" element={<ProductsPage filterOpen={filterOpen} onFilterClose={handleFilterClose} onProductCountChange={handleProductCountChange} />} />
                 <Route path="/productos/:id" element={<ProductDetailPage />} />
-                <Route path="/contacto" element={<ContactPage />} />
                 <Route path="/mochilas" element={<ProductsPage category="mochilas" />} />
                 <Route path="/materos" element={<ProductsPage category="materos" />} />
                 <Route path="/bolsos" element={<ProductsPage category="bolsos" />} />

@@ -8,7 +8,7 @@
 
 ## 📋 Resumen
 
-Implementación completa de endpoints REST para gestión de productos, incluyendo filtrado avanzado por categoría y tags, creación de productos, y operaciones CRUD con validación robusta.
+Implementacion completa de endpoints REST para gestion de productos, incluyendo filtrado avanzado por categoria y tags, creacion de productos, y operaciones CRUD con validacion robusta.
 
 ---
 
@@ -46,12 +46,12 @@ app.get('/products', (req, res) => {
 ```
 
 **Funcionalidades implementadas**:
-- **Listado completo**: Sin parámetros obtiene todos los productos
-- **Filtro por categoría**: `?category=electronics`
-- **Filtro por tags**: `?tags_like=smartphone` (búsqueda case-insensitive)
-- **Filtros combinables**: Pueden usarse juntos para búsqueda específica
+- **Listado completo**: Sin parametros obtiene todos los productos
+- **Filtro por categoria**: `?category=electronics`
+- **Filtro por tags**: `?tags_like=smartphone` (busqueda case-insensitive)
+- **Filtros combinables**: Pueden usarse juntos para busqueda especifica
 
-### 2. GET /products/:id - Producto Específico
+### 2. GET /products/:id - Producto Especifico
 
 ```javascript
 app.get('/products/:id', (req, res) => {
@@ -72,8 +72,8 @@ app.get('/products/:id', (req, res) => {
 })
 ```
 
-**Características**:
-- Validación de ID numérico
+**Caracteristicas**:
+- Validacion de ID numerico
 - Error 404 para productos inexistentes
 - Response con producto individual
 
@@ -116,8 +116,8 @@ app.post('/products', (req, res) => {
 
 **Validaciones implementadas**:
 - **Campos requeridos**: `name`, `price`, `category`
-- **Generación automática**: ID incremental
-- **Valores por defecto**: Description vacío, imagen placeholder, stock 0
+- **Generacion automatica**: ID incremental
+- **Valores por defecto**: Description vacio, imagen placeholder, stock 0
 - **Type conversion**: Price a float, stock a integer
 - **Persistencia**: Escritura a archivo JSON
 
@@ -129,16 +129,16 @@ app.post('/products', (req, res) => {
 
 **Lectura (Read)**:
 - `GET /products` - Todos los productos
-- `GET /products/:id` - Producto específico
-- `GET /products?category=electronics` - Filtro por categoría
-- `GET /products?tags_like=smartphone` - Búsqueda por tags
+- `GET /products/:id` - Producto especifico
+- `GET /products?category=electronics` - Filtro por categoria
+- `GET /products?tags_like=smartphone` - Busqueda por tags
 
-**Creación (Create)**:
-- `POST /products` - Nuevo producto con validación
+**Creacion (Create)**:
+- `POST /products` - Nuevo producto con validacion
 
 ### ✅ Filtrado Avanzado
 
-**Por categoría**:
+**Por categoria**:
 ```javascript
 if (category) {
   products = products.filter(p => p.category === category)
@@ -156,7 +156,7 @@ if (tags_like) {
 }
 ```
 
-**Filtros combinados**: Ambos filtros pueden aplicarse simultáneamente
+**Filtros combinados**: Ambos filtros pueden aplicarse simultaneamente
 
 ---
 
@@ -168,7 +168,7 @@ if (tags_like) {
   "id": 1,
   "name": "Smartphone Samsung Galaxy",
   "price": 299.99,
-  "description": "Smartphone con pantalla de 6.1 pulgadas y cámara de 48MP",
+  "description": "Smartphone con pantalla de 6.1 pulgadas y camara de 48MP",
   "image": "https://via.placeholder.com/300x300?text=Samsung+Galaxy",
   "category": "electronics",
   "stock": 15,
@@ -177,14 +177,14 @@ if (tags_like) {
 ```
 
 ### Campos del Modelo
-- **id**: Number - Generado automáticamente
+- **id**: Number - Generado automaticamente
 - **name**: String - Requerido
-- **price**: Float - Requerido, convertido automáticamente
-- **description**: String - Opcional, default vacío
+- **price**: Float - Requerido, convertido automaticamente
+- **description**: String - Opcional, default vacio
 - **image**: String - Opcional, default placeholder
 - **category**: String - Requerido para filtrado
 - **stock**: Integer - Opcional, default 0
-- **tags**: Array - Opcional, default array vacío
+- **tags**: Array - Opcional, default array vacio
 
 ---
 
@@ -211,17 +211,17 @@ curl -X GET http://localhost:3001/products
 }
 ```
 
-### Filtrar por categoría
+### Filtrar por categoria
 ```bash
 curl -X GET "http://localhost:3001/products?category=electronics"
 ```
 
-### Búsqueda por tags
+### Busqueda por tags
 ```bash
 curl -X GET "http://localhost:3001/products?tags_like=samsung"
 ```
 
-### Obtener producto específico
+### Obtener producto especifico
 ```bash
 curl -X GET http://localhost:3001/products/1
 ```
@@ -233,7 +233,7 @@ curl -X POST http://localhost:3001/products \
   -d '{
     "name": "Nuevo Producto",
     "price": 99.99,
-    "description": "Descripción del nuevo producto",
+    "description": "Descripcion del nuevo producto",
     "category": "electronics",
     "stock": 10,
     "tags": ["nuevo", "oferta"]
@@ -244,7 +244,7 @@ curl -X POST http://localhost:3001/products \
 
 ## 🛡️ Validaciones y Error Handling
 
-### Validación de Entrada
+### Validacion de Entrada
 ```javascript
 if (!name || !price || !category) {
   return errorResponse(res, 'Missing required fields: name, price, category', 400)
@@ -255,7 +255,7 @@ if (!name || !price || !category) {
 ```javascript
 price: parseFloat(price),           // String a Float
 stock: parseInt(stock) || 0,        // String a Integer con fallback
-tags: tags || []                    // Array o fallback vacío
+tags: tags || []                    // Array o fallback vacio
 ```
 
 ### Error Responses
@@ -286,7 +286,7 @@ tags: tags || []                    // Array o fallback vacío
 
 ## 🧪 Testing Scenarios
 
-### Casos de Éxito
+### Casos de exito
 
 **Listar productos**:
 ```bash
@@ -300,7 +300,7 @@ curl "http://localhost:3001/products?category=electronics&tags_like=samsung"
 # Expect: 200, productos filtrados
 ```
 
-**Crear producto válido**:
+**Crear producto valido**:
 ```bash
 curl -X POST http://localhost:3001/products \
   -H "Content-Type: application/json" \
@@ -329,20 +329,20 @@ curl -X POST http://localhost:3001/products \
 ## 💡 Decisiones de Diseño
 
 ### Filtrado Flexible
-- **Query parameters**: Estándar REST para filtros
-- **Case insensitive**: Mejor UX en búsqueda de tags
-- **Combinable**: Permite búsquedas específicas complejas
+- **Query parameters**: Estandar REST para filtros
+- **Case insensitive**: Mejor UX en busqueda de tags
+- **Combinable**: Permite busquedas especificas complejas
 
 ### ID Generation
 - **Incremental**: Simple y predecible para desarrollo
-- **Math.max**: Encuentra el ID más alto existente
-- **Fallback 0**: Maneja caso de array vacío
+- **Math.max**: Encuentra el ID mas alto existente
+- **Fallback 0**: Maneja caso de array vacio
 
 ### Default Values
 - **Image placeholder**: URL funcional para desarrollo
-- **Empty description**: Permite productos mínimos
+- **Empty description**: Permite productos minimos
 - **Stock 0**: Indica agotado por defecto
-- **Empty tags**: Array válido para operaciones
+- **Empty tags**: Array valido para operaciones
 
 ### Data Persistence
 - **Synchronous write**: Simple para este caso de uso
@@ -351,16 +351,16 @@ curl -X POST http://localhost:3001/products \
 
 ---
 
-## 🔄 Próximos Pasos
+## 🔄 Proximos Pasos
 
 Los endpoints de productos habilitan:
-1. ✅ Catálogo completo de productos
-2. ✅ Búsqueda y filtrado avanzado
-3. ✅ Creación de productos desde admin
-4. ✅ Integración con frontend React
+1. ✅ Catalogo completo de productos
+2. ✅ Busqueda y filtrado avanzado
+3. ✅ Creacion de productos desde admin
+4. ✅ Integracion con frontend React
 5. ✅ Base para carrito de compras
 
 ---
 
 **Estado**: ✅ Completado y testeado
-**Impacto**: Core funcional del e-commerce - gestión completa de catálogo de productos.
+**Impacto**: Core funcional del e-commerce - gestion completa de catalogo de productos.

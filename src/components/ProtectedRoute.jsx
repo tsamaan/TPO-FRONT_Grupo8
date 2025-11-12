@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children, requiredRole }) => {
     return <Navigate to="/login" replace />;
   }
 
-  // Si se requiere un rol específico, verificar
+  // Si se requiere un rol especifico, verificar
   if (requiredRole) {
     const userRole = user?.role || user?.roles?.[0];
     

@@ -13,8 +13,8 @@ export const usePromos = () => {
 export const PromoProvider = ({ children }) => {
   const promos = [
     "¡TODA LA WEB CON DESCUENTOS IMPERDIBLES!",
-    "Envío gratis en compras mayores a $20.000",
-    "3 y 6 cuotas sin interés"
+    "Envio gratis en compras mayores a $20.000",
+    "3 y 6 cuotas sin interes"
   ]
 
   return (

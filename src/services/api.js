@@ -1,6 +1,6 @@
 import { config } from '../config/env'
 
-// Configuración base de la API
+// Configuracion base de la API
 const API_BASE_URL = config.apiBaseUrl
 
 // Helper para obtener el token del localStorage
@@ -43,7 +43,7 @@ export const fetchProductById = async (id) => {
   }
 }
 
-// CATEGORÍAS
+// CATEGORiAS
 export const fetchCategories = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/categories`);
@@ -74,13 +74,13 @@ export const getProductById = async (id) => {
 
 export const createOrder = async (orderData, isAuthenticated = false) => {
   try {
-    // Usar endpoint diferente según si está autenticado
+    // Usar endpoint diferente segun si esta autenticado
     const endpoint = isAuthenticated ? '/orders' : '/orders/guest';
     const headers = {
       'Content-Type': 'application/json',
     };
     
-    // Solo agregar token si está autenticado
+    // Solo agregar token si esta autenticado
     if (isAuthenticated) {
       Object.assign(headers, getAuthHeader());
     }
@@ -261,7 +261,7 @@ export const createCartItem = async (cartData) => {
   }
 }
 
-// Obtener todas las órdenes
+// Obtener todas las ordenes
 export const fetchOrders = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/orders`, {
@@ -280,7 +280,7 @@ export const fetchOrders = async () => {
   }
 };
 
-// Obtener órdenes de un usuario específico
+// Obtener ordenes de un usuario especifico
 export const fetchUserOrders = async (userId) => {
   try {
     const response = await fetch(`${API_BASE_URL}/orders/user/${userId}`, {
@@ -299,7 +299,7 @@ export const fetchUserOrders = async (userId) => {
   }
 };
 
-// Obtener órdenes por email (incluye compras hechas sin estar logueado)
+// Obtener ordenes por email (incluye compras hechas sin estar logueado)
 export const getOrdersByEmail = async (email) => {
   try {
     const response = await fetch(`${API_BASE_URL}/orders/email/${encodeURIComponent(email)}`, {

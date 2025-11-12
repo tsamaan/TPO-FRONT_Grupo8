@@ -23,7 +23,7 @@
   }
 }
 
-/* Para asegurar que el widget del carrito esté por encima */
+/* Para asegurar que el widget del carrito este por encima */
 .cart-widget {
   z-index: 1300 !important;
 }

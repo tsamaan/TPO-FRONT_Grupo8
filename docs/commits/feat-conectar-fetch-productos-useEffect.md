@@ -1,14 +1,14 @@
 # feat: conectar fetch de productos con useEffect
 
 **Tipo**: Feature (Nueva funcionalidad)
-**Fecha**: Integración frontend-backend
+**Fecha**: Integracion frontend-backend
 **Archivos modificados**: `src/services/api.js`, `src/App.jsx`, `src/App.css`, `src/components/CategoryFilter.jsx`
 
 ---
 
 ## 📋 Resumen
 
-Implementación completa de la integración frontend-backend para mostrar productos, incluyendo servicio de fetch, componente React con useEffect, filtrado por categorías en tiempo real y interfaz visual responsive.
+Implementacion completa de la integracion frontend-backend para mostrar productos, incluyendo servicio de fetch, componente React con useEffect, filtrado por categorias en tiempo real y interfaz visual responsive.
 
 ---
 
@@ -52,8 +52,8 @@ export const fetchProductById = async (id) => {
 }
 ```
 
-**Características del servicio**:
-- **URL dinámica**: Construye query parameters para filtros
+**Caracteristicas del servicio**:
+- **URL dinamica**: Construye query parameters para filtros
 - **Error handling**: Valida respuestas HTTP y captura errores
 - **Async/await**: Sintaxis moderna para promises
 - **Reutilizable**: Funciones exportables para cualquier componente
@@ -88,7 +88,7 @@ function App() {
     }
 
     loadProducts()
-  }, [selectedCategory]) // Re-ejecuta cuando cambia la categoría
+  }, [selectedCategory]) // Re-ejecuta cuando cambia la categoria
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category)
@@ -106,7 +106,7 @@ function App() {
       />
       <div className="products-grid">
         {products.length === 0 ? (
-          <div className="no-products">No se encontraron productos en esta categoría</div>
+          <div className="no-products">No se encontraron productos en esta categoria</div>
         ) : (
           products.map(product => (
             <div key={product.id} className="product-card">
@@ -131,26 +131,26 @@ function App() {
 
 **Estados implementados**:
 - **products**: Array de productos del servidor
-- **loading**: Indica si está cargando datos
+- **loading**: Indica si esta cargando datos
 - **error**: Almacena mensajes de error
-- **selectedCategory**: Categoría seleccionada para filtrado
+- **selectedCategory**: Categoria seleccionada para filtrado
 
-### 3. Filtro de Categorías - `src/components/CategoryFilter.jsx`
+### 3. Filtro de Categorias - `src/components/CategoryFilter.jsx`
 
 ```javascript
 import './CategoryFilter.css'
 
 const CategoryFilter = ({ selectedCategory, onCategoryChange }) => {
   const categories = [
-    { value: '', label: 'Todas las categorías' },
-    { value: 'electronics', label: 'Electrónicos' },
+    { value: '', label: 'Todas las categorias' },
+    { value: 'electronics', label: 'Electronicos' },
     { value: 'clothing', label: 'Ropa' },
     { value: 'books', label: 'Libros' }
   ]
 
   return (
     <div className="category-filter">
-      <label htmlFor="category-select">Filtrar por categoría:</label>
+      <label htmlFor="category-select">Filtrar por categoria:</label>
       <select
         id="category-select"
         value={selectedCategory}
@@ -172,7 +172,7 @@ export default CategoryFilter
 
 **Funcionalidades**:
 - **Controlled component**: Estado manejado por componente padre
-- **Select dinámico**: Opciones mapeadas desde array
+- **Select dinamico**: Opciones mapeadas desde array
 - **Accesibilidad**: Labels apropiados y IDs
 
 ### 4. Estilos CSS - `src/App.css` y `src/components/CategoryFilter.css`
@@ -200,16 +200,16 @@ export default CategoryFilter
 }
 ```
 
-**Características visuales**:
+**Caracteristicas visuales**:
 - **Grid responsive**: Se adapta a diferentes tamaños de pantalla
-- **Cards con hover**: Efectos visuales de interacción
+- **Cards con hover**: Efectos visuales de interaccion
 - **Tags styled**: Diseño tipo chips para los tags
 
 ---
 
 ## 🎯 Funcionalidades Implementadas
 
-### ✅ Carga Automática de Datos
+### ✅ Carga Automatica de Datos
 
 **useEffect inicial**:
 ```javascript
@@ -227,12 +227,12 @@ useEffect(() => {
 
 ### ✅ Filtrado Reactivo
 
-**Cambio de categoría**:
-1. Usuario selecciona categoría en dropdown
+**Cambio de categoria**:
+1. Usuario selecciona categoria en dropdown
 2. `handleCategoryChange` actualiza estado
 3. `useEffect` detecta cambio en dependencias
 4. Nueva llamada a API con filtro
-5. UI se actualiza automáticamente
+5. UI se actualiza automaticamente
 
 ### ✅ Estados de UI
 
@@ -249,7 +249,7 @@ if (error) return <div>Error: {error}</div>
 **Empty state**:
 ```javascript
 {products.length === 0 ? (
-  <div className="no-products">No se encontraron productos en esta categoría</div>
+  <div className="no-products">No se encontraron productos en esta categoria</div>
 ) : (
   // Renderizar productos
 )}
@@ -257,7 +257,7 @@ if (error) return <div>Error: {error}</div>
 
 ### ✅ Renderizado de Productos
 
-**Mapeo dinámico**:
+**Mapeo dinamico**:
 ```javascript
 products.map(product => (
   <div key={product.id} className="product-card">
@@ -277,14 +277,14 @@ products.map(product => (
 
 ## 🔄 Flujo de Datos Completo
 
-### 1. Inicialización
+### 1. Inicializacion
 ```
 App.jsx monta → useEffect ejecuta → fetchProducts() → API call → Response → setState(products)
 ```
 
 ### 2. Filtrado
 ```
-Usuario selecciona categoría → handleCategoryChange → setSelectedCategory →
+Usuario selecciona categoria → handleCategoryChange → setSelectedCategory →
 useEffect detecta cambio → fetchProducts(category) → API call con query →
 Response filtrada → setState(products) → UI actualizada
 ```
@@ -297,7 +297,7 @@ Conditional render muestra error → User ve mensaje
 
 ---
 
-## 📊 Integración Frontend-Backend
+## 📊 Integracion Frontend-Backend
 
 ### Request Format
 ```javascript
@@ -338,18 +338,18 @@ setProducts(data.data) // Accede al array dentro de data
 ### Verificaciones Realizadas
 
 **Carga inicial**:
-1. Abrir aplicación → Ver "Cargando productos..."
+1. Abrir aplicacion → Ver "Cargando productos..."
 2. Datos cargan → Grid de productos visible
-3. Todas las categorías seleccionadas por defecto
+3. Todas las categorias seleccionadas por defecto
 
 **Filtrado funcional**:
-1. Seleccionar "Electrónicos" → Solo productos electronics
+1. Seleccionar "Electronicos" → Solo productos electronics
 2. Seleccionar "Ropa" → Solo productos clothing
 3. Seleccionar "Todas" → Todos los productos
 
 **Estados de error**:
 1. Servidor offline → Mensaje de error
-2. Network error → Error de conexión
+2. Network error → Error de conexion
 3. Empty category → "No se encontraron productos"
 
 **Responsive design**:
@@ -359,7 +359,7 @@ setProducts(data.data) // Accede al array dentro de data
 
 ---
 
-## 💡 Decisiones Técnicas
+## 💡 Decisiones Tecnicas
 
 ### useEffect Dependencies
 ```javascript
@@ -397,16 +397,16 @@ try {
 
 ---
 
-## 🔄 Próximos Pasos
+## 🔄 Proximos Pasos
 
-Esta integración habilita:
-1. ✅ Catálogo visual completo
-2. ✅ Búsqueda y filtrado en tiempo real
+Esta integracion habilita:
+1. ✅ Catalogo visual completo
+2. ✅ Busqueda y filtrado en tiempo real
 3. ✅ Base para carrito de compras
 4. ✅ Detalles de productos individuales
-5. ✅ Paginación y más filtros avanzados
+5. ✅ Paginacion y mas filtros avanzados
 
 ---
 
 **Estado**: ✅ Completado y funcional
-**Impacto**: Conexión completa frontend-backend, experiencia de usuario fluida para navegación de productos.
+**Impacto**: Conexion completa frontend-backend, experiencia de usuario fluida para navegacion de productos.

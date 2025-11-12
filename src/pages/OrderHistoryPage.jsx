@@ -23,7 +23,7 @@ const OrderHistoryPage = () => {
         setOrders(ordersData);
         setError(null);
       } catch (err) {
-        console.error('Error al obtener órdenes:', err);
+        console.error('Error al obtener ordenes:', err);
         setError('Error al cargar el historial de compras');
       } finally {
         setLoading(false);
@@ -90,7 +90,7 @@ const OrderHistoryPage = () => {
           <div className="empty-orders">
             <div className="empty-orders-icon">📦</div>
             <h2>No tienes compras realizadas</h2>
-            <p>Cuando realices tu primera compra, aparecerá aquí.</p>
+            <p>Cuando realices tu primera compra, aparecera aqui.</p>
             <a href="/productos" className="btn-primary">Ir a Productos</a>
           </div>
         ) : (
@@ -129,7 +129,7 @@ const OrderHistoryPage = () => {
 
                   {order.direccion && (
                     <div className="order-address">
-                      <h4>Dirección de entrega</h4>
+                      <h4>Direccion de entrega</h4>
                       <p>
                         {order.direccion.calle}
                         {order.direccion.ciudad && `, ${order.direccion.ciudad}`}

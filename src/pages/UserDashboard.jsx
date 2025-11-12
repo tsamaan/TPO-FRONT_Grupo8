@@ -14,11 +14,11 @@ const UserDashboard = () => {
         <div className="user-dashboard ">
             <div className="user-dashboard-header">
                 <h1>Mi Perfil</h1>
-                <button onClick={logout} className="logout-btn">Cerrar Sesión</button>
+                <button onClick={logout} className="logout-btn">Cerrar Sesion</button>
             </div>
 
             <div className="user-info-card">
-                <h2>Información Personal</h2>
+                <h2>Informacion Personal</h2>
                 <div className="user-info-grid">
                     <div className="user-info-item">
                         <span className="info-label">Nombre:</span>
@@ -30,13 +30,13 @@ const UserDashboard = () => {
                     </div>
                     {user?.phone && (
                         <div className="user-info-item">
-                            <span className="info-label">Teléfono:</span>
+                            <span className="info-label">Telefono:</span>
                             <span className="info-value">{user.phone}</span>
                         </div>
                     )}
                     {user?.address && (
                         <div className="user-info-item">
-                            <span className="info-label">Dirección:</span>
+                            <span className="info-label">Direccion:</span>
                             <span className="info-value">{user.address}</span>
                         </div>
                     )}

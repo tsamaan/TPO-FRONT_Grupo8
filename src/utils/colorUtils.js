@@ -12,8 +12,8 @@ export const colorMap = {
   'Morado': '#8A2BE2',
   'Celeste': '#87CEEB',
   'Fucsia': '#FF1493',
-  'Marrón': '#8B4513',
-  'Café': '#6F4E37',
+  'Marron': '#8B4513',
+  'Cafe': '#6F4E37',
   'Beige': '#F5F5DC',
   'Turquesa': '#40E0D0',
   'Coral': '#FF7F50',
@@ -27,12 +27,12 @@ export const colorMap = {
   'Vino': '#722F37'
 };
 
-// Función para obtener el color hexadecimal de un nombre
+// Funcion para obtener el color hexadecimal de un nombre
 export const getColorHex = (colorName) => {
   return colorMap[colorName] || '#CCCCCC'; // Color gris por defecto
 };
 
-// Función para determinar si usar texto claro u oscuro sobre un color
+// Funcion para determinar si usar texto claro u oscuro sobre un color
 export const getContrastText = (hex) => {
   // Convertir hex a RGB
   const r = parseInt(hex.slice(1, 3), 16);

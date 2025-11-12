@@ -26,9 +26,9 @@ const ProductList = ({ category: propCategory = null, filterOpen = false, onFilt
   
   const { cart, addToCart, removeFromCart } = useContext(CartContext);
 
-  // Cuando cambia la categoría de la prop, actualizar el filtro
+  // Cuando cambia la categoria de la prop, actualizar el filtro
   useEffect(() => {
-    console.log('Cambio de categoría detectado:', category);
+    console.log('Cambio de categoria detectado:', category);
     
     // Primero limpiar otros filtros para evitar conflictos
     clearFilters();

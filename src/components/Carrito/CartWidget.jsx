@@ -28,7 +28,7 @@ const CartWidget = ({ onMenuClick }) => {
       </div>
       <button
         className="mobile-menu-btn"
-        aria-label="Abrir menú"
+        aria-label="Abrir menu"
         onClick={handleMobileMenuClick}
       >
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#222" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -41,7 +41,7 @@ const CartWidget = ({ onMenuClick }) => {
       {mobileNavOpen && (
         <div className="mobile-navbar-overlay" onClick={handleMobileMenuClose}>
           <div className="mobile-navbar" onClick={e => e.stopPropagation()}>
-            <button className="mobile-navbar-close" onClick={handleMobileMenuClose} aria-label="Cerrar menú">×</button>
+            <button className="mobile-navbar-close" onClick={handleMobileMenuClose} aria-label="Cerrar menu">×</button>
 
             <div className="mobile-navbar-content">
               <div className="mobile-navbar__top">
@@ -56,7 +56,6 @@ const CartWidget = ({ onMenuClick }) => {
                   <button type="button" className="mobile-navbar-link mobile-navbar-link--button" style={{ background: 'none', border: 'none', color: '#fff', fontWeight: 700, fontSize: '1.25rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
                     Productos <span aria-hidden="true">&gt;</span>
                   </button>
-                  <a href="/contacto" className="mobile-navbar-link">Contacto</a>
                 </nav>
               </div>
               <div className="mobile-navbar__bottom">

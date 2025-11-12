@@ -41,7 +41,7 @@ export async function loginService(email, password) {
     console.error('Error during login:', error)
     return { 
       success: false, 
-      message: error.message || "Error de conexión con el servidor" 
+      message: error.message || "Error de conexion con el servidor" 
     }
   }
 }
@@ -91,7 +91,7 @@ export async function registerService(data) {
     console.error('Error during registration:', error)
     return { 
       success: false, 
-      message: error.message || "Error de conexión con el servidor" 
+      message: error.message || "Error de conexion con el servidor" 
     }
   }
 }
@@ -121,7 +121,7 @@ export async function logoutService() {
     return { success: true };
   } catch (error) {
     console.error('Error during logout:', error);
-    // Aún así limpiar el localStorage
+    // Aun asi limpiar el localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     return { success: true };

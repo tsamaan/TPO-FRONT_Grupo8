@@ -1,30 +1,30 @@
-# Implementación del Navbar Vertical
+# Implementacion del Navbar Vertical
 
 ## Cambios Realizados
 
-1. Creación del componente Navbar
-- Se creó el archivo `Navbar.jsx` en la carpeta `src/components/Navbar`
-- Implementación de navbar vertical fijo
+1. Creacion del componente Navbar
+- Se creo el archivo `Navbar.jsx` en la carpeta `src/components/Navbar`
+- Implementacion de navbar vertical fijo
 - Estructura organizada en tres secciones principales:
   * Logo
-  * Enlaces de navegación
-  * Footer con redes sociales y botones de autenticación
+  * Enlaces de navegacion
+  * Footer con redes sociales y botones de autenticacion
 
 2. Estilos del Navbar
-- Se creó el archivo `Navbar.css`
+- Se creo el archivo `Navbar.css`
 - Diseño vertical con fondo negro
 - Links en color blanco
-- Disposición flexible usando flexbox
+- Disposicion flexible usando flexbox
 - Diseño responsive
 - Transiciones suaves en hover
 
-## Características
+## Caracteristicas
 - Navbar fijo en el lado izquierdo
 - Logo placeholder en la parte superior
-- Enlaces de navegación principales
-- Sección de redes sociales (Instagram)
-- Botones de autenticación
-- Diseño responsive que se adapta a dispositivos móviles
+- Enlaces de navegacion principales
+- Seccion de redes sociales (Instagram)
+- Botones de autenticacion
+- Diseño responsive que se adapta a dispositivos moviles
 
 ## Estructura
 - Logo Container
@@ -38,4 +38,4 @@
 
 ## Responsive Design
 - Escritorio: Navbar vertical
-- Móvil: Navbar horizontal con menú hamburguesa (pendiente de implementar)
+- Movil: Navbar horizontal con menu hamburguesa (pendiente de implementar)

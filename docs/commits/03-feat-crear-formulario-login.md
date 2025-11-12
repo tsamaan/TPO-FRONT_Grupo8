@@ -7,13 +7,13 @@
 - `src/components/auth/RegisterForm/RegisterForm.css`
 - `src/App.jsx`
 
-## Descripción detallada
-Se adapta el formulario de login y registro para permitir la navegación entre ambos, siguiendo la estética definida en el archivo Figma TPO. Los cambios incluyen:
-- Navegación fluida entre login y registro mediante botones dedicados.
-- Unificación y mejora de los estilos visuales para ambos formularios, asegurando coherencia y modernidad.
-- Actualización de `App.jsx` para alternar entre login y registro según la acción del usuario.
-- Inclusión de footers y botones secundarios para una mejor experiencia de usuario.
+## Descripcion detallada
+Se adapta el formulario de login y registro para permitir la navegacion entre ambos, siguiendo la estetica definida en el archivo Figma TPO. Los cambios incluyen:
+- Navegacion fluida entre login y registro mediante botones dedicados.
+- Unificacion y mejora de los estilos visuales para ambos formularios, asegurando coherencia y modernidad.
+- Actualizacion de `App.jsx` para alternar entre login y registro segun la accion del usuario.
+- Inclusion de footers y botones secundarios para una mejor experiencia de usuario.
 
-### Justificación y utilidad:
+### Justificacion y utilidad:
 - Facilita el acceso y registro de usuarios en la app.
-- Mejora la usabilidad y la percepción visual del sistema.
+- Mejora la usabilidad y la percepcion visual del sistema.

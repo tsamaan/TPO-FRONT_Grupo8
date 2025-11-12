@@ -1,20 +1,20 @@
 # chore: configurar db.json en json-server
 
-**Tipo**: Chore (Configuración/Mantenimiento)
-**Fecha**: Implementación inicial
+**Tipo**: Chore (Configuracion/Mantenimiento)
+**Fecha**: Implementacion inicial
 **Archivos modificados**: `db.json`, `package.json`
 
 ---
 
 ## 📋 Resumen
 
-Configuración inicial del backend usando JSON Server como API REST rápida para desarrollo. Este commit establece la base de datos de prueba y los scripts necesarios para levantar el servidor.
+Configuracion inicial del backend usando JSON Server como API REST rapida para desarrollo. Este commit establece la base de datos de prueba y los scripts necesarios para levantar el servidor.
 
 ---
 
 ## 🔧 Cambios Implementados
 
-### 1. Creación de `db.json`
+### 1. Creacion de `db.json`
 
 **Archivo**: `db.json`
 
@@ -25,23 +25,23 @@ Configuración inicial del backend usando JSON Server como API REST rápida para
       "id": 1,
       "name": "Smartphone Samsung Galaxy",
       "price": 299.99,
-      "description": "Smartphone con pantalla de 6.1 pulgadas y cámara de 48MP",
+      "description": "Smartphone con pantalla de 6.1 pulgadas y camara de 48MP",
       "image": "https://via.placeholder.com/300x300?text=Samsung+Galaxy",
       "category": "electronics",
       "stock": 15,
       "tags": ["smartphone", "samsung", "android", "48mp", "pantalla grande"]
     }
-    // ... más productos
+    // ... mas productos
   ],
   "users": [
     {
       "id": 1,
       "email": "juan@example.com",
-      "name": "Juan Pérez",
+      "name": "Juan Perez",
       "address": "Av. Corrientes 1234, Buenos Aires",
       "phone": "+54 11 1234-5678"
     }
-    // ... más usuarios
+    // ... mas usuarios
   ],
   "cart": [
     {
@@ -52,17 +52,17 @@ Configuración inicial del backend usando JSON Server como API REST rápida para
       "createdAt": "2025-01-15T10:30:00Z",
       "updatedAt": "2025-01-15T10:30:00Z"
     }
-    // ... más carritos
+    // ... mas carritos
   ]
 }
 ```
 
 **Estructura de Datos**:
-- **products**: Catálogo de productos con tags, categorías, stock
-- **users**: Usuarios con información completa incluido teléfono
+- **products**: Catalogo de productos con tags, categorias, stock
+- **users**: Usuarios con informacion completa incluido telefono
 - **cart**: Carritos de compras con timestamps y totales
 
-### 2. Configuración en `package.json`
+### 2. Configuracion en `package.json`
 
 **Dependencia agregada**:
 ```json
@@ -84,29 +84,29 @@ Configuración inicial del backend usando JSON Server como API REST rápida para
 
 ### ✅ Backend Funcional
 - Servidor API REST en puerto 3001
-- Endpoints automáticos para CRUD operations
+- Endpoints automaticos para CRUD operations
 - Hot-reload con `--watch`
 
 ### ✅ Datos de Prueba
-- 4 productos con categorías (electronics, clothing, books)
+- 4 productos con categorias (electronics, clothing, books)
 - 2 usuarios con datos completos
 - 2 carritos con productos y totales
 - Estructura normalizada y relacional
 
-### ✅ Configuración Básica
-- Script de inicio rápido: `npm run server`
+### ✅ Configuracion Basica
+- Script de inicio rapido: `npm run server`
 - Puerto separado del frontend (3001)
-- CORS habilitado automáticamente
+- CORS habilitado automaticamente
 
 ---
 
 ## 🚀 Endpoints Disponibles
 
-### Automáticos por JSON Server:
+### Automaticos por JSON Server:
 
 **Productos**:
 - `GET /products` - Listar todos
-- `GET /products/1` - Obtener específico
+- `GET /products/1` - Obtener especifico
 - `GET /products?category=electronics` - Filtrar
 - `POST /products` - Crear nuevo
 - `PUT /products/1` - Actualizar completo
@@ -115,7 +115,7 @@ Configuración inicial del backend usando JSON Server como API REST rápida para
 
 **Usuarios**:
 - `GET /users` - Listar todos
-- `GET /users/1` - Obtener específico
+- `GET /users/1` - Obtener especifico
 - `POST /users` - Crear nuevo
 - `PUT/PATCH/DELETE /users/:id` - Modificar
 
@@ -130,14 +130,14 @@ Configuración inicial del backend usando JSON Server como API REST rápida para
 ## 💡 Decisiones de Diseño
 
 ### Estructura de Productos
-- **Tags**: Array para búsqueda flexible
+- **Tags**: Array para busqueda flexible
 - **Category**: String para filtrado simple
 - **Stock**: Control de inventario
 - **Images**: URLs placeholder para desarrollo
 
 ### Estructura de Usuarios
 - **Phone**: Campo adicional para contacto
-- **Address**: Información completa de entrega
+- **Address**: Informacion completa de entrega
 
 ### Estructura de Carrito
 - **Timestamps**: Para tracking temporal
@@ -146,20 +146,20 @@ Configuración inicial del backend usando JSON Server como API REST rápida para
 
 ---
 
-## 🔄 Próximos Pasos
+## 🔄 Proximos Pasos
 
 Este commit sienta las bases para:
-1. ✅ Desarrollo de endpoints específicos
-2. ✅ Integración con frontend React
-3. ✅ Implementación de filtros y búsquedas
-4. ✅ Validación de datos
+1. ✅ Desarrollo de endpoints especificos
+2. ✅ Integracion con frontend React
+3. ✅ Implementacion de filtros y busquedas
+4. ✅ Validacion de datos
 5. ✅ Mejoras de performance
 
 ---
 
 ## 🧪 Testing
 
-**Verificación manual**:
+**Verificacion manual**:
 ```bash
 # Iniciar servidor
 npm run server
@@ -175,4 +175,4 @@ curl http://localhost:3001/cart
 ---
 
 **Estado**: ✅ Completado y funcional
-**Impacto**: Establece la infraestructura backend básica para el proyecto e-commerce.
+**Impacto**: Establece la infraestructura backend basica para el proyecto e-commerce.

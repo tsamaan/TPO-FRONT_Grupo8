@@ -16,7 +16,7 @@ const AddProductForm = ({ onProductAdded }) => {
 
   const [currentImageUrl, setCurrentImageUrl] = useState('');
   
-  // Estado para la variante actual que se está agregando
+  // Estado para la variante actual que se esta agregando
   const [currentVariant, setCurrentVariant] = useState({
     color: '',
     size: '',
@@ -32,11 +32,11 @@ const AddProductForm = ({ onProductAdded }) => {
     const validate = () => {
       const newErrors = {};
       if (!product.name) newErrors.name = 'El nombre es obligatorio.';
-      if (!product.description) newErrors.description = 'La descripción es obligatoria.';
+      if (!product.description) newErrors.description = 'La descripcion es obligatoria.';
       if (product.price <= 0) newErrors.price = 'El precio debe ser mayor que cero.';
-      if (!product.categoryName) newErrors.categoryName = 'La categoría es obligatoria.';
+      if (!product.categoryName) newErrors.categoryName = 'La categoria es obligatoria.';
       if ((!product.image || !product.image.trim()) && (!product.images || product.images.length === 0)) {
-        newErrors.images = 'Debe agregar al menos una imagen (principal o en galería).';
+        newErrors.images = 'Debe agregar al menos una imagen (principal o en galeria).';
       }
       if (!product.variants || product.variants.length === 0) newErrors.variants = 'Debe agregar al menos una variante (color/stock).';
 
@@ -64,7 +64,7 @@ const AddProductForm = ({ onProductAdded }) => {
 
   const addVariant = () => {
     if (currentVariant.color.trim() && currentVariant.stock >= 0) {
-      // Generar SKU automático si no se proporciona
+      // Generar SKU automatico si no se proporciona
       const sku = currentVariant.sku.trim() || 
                   `${product.name.substring(0, 3).toUpperCase()}-${currentVariant.color.toUpperCase()}-${Date.now()}`;
       
@@ -114,7 +114,7 @@ const AddProductForm = ({ onProductAdded }) => {
     if (Object.keys(errors).length === 0) {
       try {
         await createProduct(product);
-        alert('Producto creado con éxito');
+        alert('Producto creado con exito');
         if(onProductAdded) onProductAdded();
         setProduct({
           name: '',
@@ -168,7 +168,7 @@ const AddProductForm = ({ onProductAdded }) => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="description">Descripción</label>
+        <label htmlFor="description">Descripcion</label>
         <textarea
           id="description"
           name="description"
@@ -189,7 +189,7 @@ const AddProductForm = ({ onProductAdded }) => {
           placeholder="URL de la imagen principal del producto"
         />
         <small className="form-hint">
-          Esta será la imagen por defecto. Si está vacía, se usará la primera de la galería.
+          Esta sera la imagen por defecto. Si esta vacia, se usara la primera de la galeria.
         </small>
         {product.image && (
           <div className="image-preview-single" style={{marginTop: '10px'}}>
@@ -199,7 +199,7 @@ const AddProductForm = ({ onProductAdded }) => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="images">Galería de Imágenes (URLs)</label>
+        <label htmlFor="images">Galeria de Imagenes (URLs)</label>
         <div className="image-url-group">
           <input
             type="text"
@@ -240,11 +240,11 @@ const AddProductForm = ({ onProductAdded }) => {
           step="0.01"
         />
         {errors.price && <p className="error">{errors.price}</p>}
-        <small className="form-hint">El precio final puede variar según la variante (color/talla)</small>
+        <small className="form-hint">El precio final puede variar segun la variante (color/talla)</small>
       </div>
 
       <div className="form-group">
-        <label htmlFor="categoryName">Categoría</label>
+        <label htmlFor="categoryName">Categoria</label>
         <input
           type="text"
           id="categoryName"
@@ -253,7 +253,7 @@ const AddProductForm = ({ onProductAdded }) => {
           onChange={handleChange}
           placeholder="Ej: mochilas, bolsos, materos"
         />
-        <small className="form-hint">Nombre de la categoría (debe existir en el sistema)</small>
+        <small className="form-hint">Nombre de la categoria (debe existir en el sistema)</small>
         {errors.categoryName && <p className="error">{errors.categoryName}</p>}
       </div>
 
@@ -268,7 +268,7 @@ const AddProductForm = ({ onProductAdded }) => {
         />
       </div>
 
-      {/* NUEVA SECCIÓN: VARIANTES */}
+      {/* NUEVA SECCIoN: VARIANTES */}
       <div className="form-group variants-section">
         <h3>Variantes del Producto</h3>
         <p className="form-hint">Agrega diferentes combinaciones de color y stock para este producto</p>
@@ -320,7 +320,7 @@ const AddProductForm = ({ onProductAdded }) => {
                 type="text"
                 id="variant-sku"
                 name="sku"
-                placeholder="Se genera automáticamente"
+                placeholder="Se genera automaticamente"
                 value={currentVariant.sku}
                 onChange={handleVariantChange}
               />
@@ -341,7 +341,7 @@ const AddProductForm = ({ onProductAdded }) => {
             </div>
             
             <div className="variant-field">
-              <label htmlFor="variant-image-url">Imagen específica</label>
+              <label htmlFor="variant-image-url">Imagen especifica</label>
               <input
                 type="text"
                 id="variant-image-url"

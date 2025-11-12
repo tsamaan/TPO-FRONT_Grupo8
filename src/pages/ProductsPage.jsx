@@ -27,7 +27,7 @@ const ProductsPage = ({ filterOpen, onFilterClose, onProductCountChange, categor
           <h2 style={{ fontSize: '2.2rem', fontWeight: 700, color: '#3b3b5c', marginBottom: '0.3rem', letterSpacing: '0.02em' }}>
              {categoriaActual}
           </h2>
-          <p style={{ fontSize: '1.1rem', color: '#5c5c7a', margin: 0 }}>Explora nuestro catálogo actualizado en tiempo real y encuentra las mejores ofertas.</p>
+          <p style={{ fontSize: '1.1rem', color: '#5c5c7a', margin: 0 }}>Explora nuestro catalogo actualizado en tiempo real y encuentra las mejores ofertas.</p>
         </div>
         <ProductList 
           filterOpen={filterOpen}

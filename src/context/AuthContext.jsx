@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
 
-  // Recuperar sesión del localStorage al cargar
+  // Recuperar sesion del localStorage al cargar
   useEffect(() => {
     const token = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
       setUser(result.user);
       setError("");
       
-      // El token ya está guardado en localStorage por loginService
+      // El token ya esta guardado en localStorage por loginService
       return true;
     } else {
       setIsAuthenticated(false);
@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  // Verificar si el usuario tiene un rol específico
+  // Verificar si el usuario tiene un rol especifico
   const hasRole = (role) => {
     if (!user) return false;
     return user.role === role || user.roles?.includes(role);

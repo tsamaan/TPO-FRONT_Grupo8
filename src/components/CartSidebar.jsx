@@ -12,7 +12,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
   const { cart, removeFromCart, addToCart, calculateTotal, clearCart } = useCart();
   const { user } = useAuth();
 
-  // Simulación de stock en memoria (solo para frontend)
+  // Simulacion de stock en memoria (solo para frontend)
   const stockMap = React.useRef({});
   React.useEffect(() => {
     cart.forEach(item => {
@@ -39,7 +39,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
     if (stockRestante > 0) {
       addToCart(item, 1);
     } else {
-      alert('No hay más stock disponible de este producto');
+      alert('No hay mas stock disponible de este producto');
     }
   };
 
@@ -62,11 +62,11 @@ const CartSidebar = ({ isOpen, onClose }) => {
       );
       const sinStock = stockCheck.some(valid => !valid);
       if (sinStock) {
-        alert('No hay suficiente stock disponible para uno o más productos. Actualiza la página y vuelve a intentar.');
+        alert('No hay suficiente stock disponible para uno o mas productos. Actualiza la pagina y vuelve a intentar.');
         return;
       }
       
-      // Si el usuario está logueado, finalizar compra directamente
+      // Si el usuario esta logueado, finalizar compra directamente
       if (user) {
         await finalizarCompra({
           nombre: user.nombre,
@@ -75,7 +75,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
           telefono: user.phone || ''
         });
       } else {
-        // Si no está logueado, mostrar formulario
+        // Si no esta logueado, mostrar formulario
         setShowUserForm(true);
       }
     } catch (err) {
@@ -83,7 +83,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
     }
   };
 
-  // Función centralizada para finalizar la compra
+  // Funcion centralizada para finalizar la compra
   const finalizarCompra = async (datosUsuario) => {
     try {
       // Volver a chequear stock antes de finalizar
@@ -95,7 +95,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
       );
       const sinStock = stockCheck.some(valid => !valid);
       if (sinStock) {
-        alert('No hay suficiente stock disponible para uno o más productos. Actualiza la página y vuelve a intentar.');
+        alert('No hay suficiente stock disponible para uno o mas productos. Actualiza la pagina y vuelve a intentar.');
         setShowUserForm(false);
         return;
       }
@@ -105,8 +105,8 @@ const CartSidebar = ({ isOpen, onClose }) => {
         ...datosUsuario,
         productos: cart.map(item => ({
           id: item.id,
-          variantId: item.variantId, // ID de la variante (para reducir stock del color específico)
-          sku: item.sku, // SKU único de la variante
+          variantId: item.variantId, // ID de la variante (para reducir stock del color especifico)
+          sku: item.sku, // SKU unico de la variante
           name: item.name,
           cantidad: item.quantity,
           precio: item.price,
@@ -117,13 +117,13 @@ const CartSidebar = ({ isOpen, onClose }) => {
         fecha: new Date().toISOString()
       };
       
-      // Usar el endpoint correcto según si está autenticado
-      // El backend se encargará de reducir el stock de cada variante
+      // Usar el endpoint correcto segun si esta autenticado
+      // El backend se encargara de reducir el stock de cada variante
       await createOrder(orderData, !!user);
       
-      // Limpiar carrito después de crear la orden exitosamente
+      // Limpiar carrito despues de crear la orden exitosamente
       clearCart();
-      alert('¡Compra generada con éxito!');
+      alert('¡Compra generada con exito!');
       setShowUserForm(false);
       onClose();
       navigate('/');
@@ -155,7 +155,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
         <h2 className="cart-title">Carrito de Compras</h2>
         <div className="cart-items-list">
           {cart.length === 0 ? (
-            <div className="cart-empty">Tu carrito está vacío.</div>
+            <div className="cart-empty">Tu carrito esta vacio.</div>
           ) : (
             cart.map(item => (
               <div className="cart-item" key={item.cartItemId || item.sku || item.id}>
@@ -196,8 +196,8 @@ const CartSidebar = ({ isOpen, onClose }) => {
             <span>${totalPrice.toLocaleString('es-AR')}</span>
           </div>
           <div className="cart-envio-row">
-            <span>ENVÍO:</span>
-            <span>Calculálo arriba para verlo</span>
+            <span>ENViO:</span>
+            <span>Calculalo arriba para verlo</span>
           </div>
           {!showUserForm && (
             <button className="cart-buy-btn" onClick={handleBuy}>
@@ -222,7 +222,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
                 <input type="text" name="apellido" placeholder="Apellido" value={userData.apellido} onChange={handleUserInputChange} required style={{ flex: '1 1 100%', minWidth: '0', padding: '0.7rem', borderRadius: '8px', border: '1px solid #b63939', fontSize: '1rem', background: '#fff' }} />
               </div>
               <input type="email" name="email" placeholder="Email" value={userData.email} onChange={handleUserInputChange} required style={{ width: '100%', padding: '0.7rem', borderRadius: '8px', border: '1px solid #b63939', fontSize: '1rem', background: '#fff' }} />
-              <input type="text" name="telefono" placeholder="Teléfono" value={userData.telefono} onChange={handleUserInputChange} required style={{ width: '100%', padding: '0.7rem', borderRadius: '8px', border: '1px solid #b63939', fontSize: '1rem', background: '#fff' }} />
+              <input type="text" name="telefono" placeholder="Telefono" value={userData.telefono} onChange={handleUserInputChange} required style={{ width: '100%', padding: '0.7rem', borderRadius: '8px', border: '1px solid #b63939', fontSize: '1rem', background: '#fff' }} />
               {formError && <div style={{ color: '#b63939', fontSize: '1rem', fontWeight: 600, marginTop: '-0.5rem' }}>{formError}</div>}
               <button type="submit" className="cart-buy-btn" style={{
                 background: 'linear-gradient(90deg, #b63939 60%, #e0e7ff 100%)',

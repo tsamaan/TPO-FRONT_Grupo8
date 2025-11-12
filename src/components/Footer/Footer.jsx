@@ -10,7 +10,6 @@ const Footer = () => {
             <ul>
               <li><a href="/">INICIO</a></li>
               <li><a href="/productos">PRODUCTOS</a></li>
-              <li><a href="/contacto">CONTACTO</a></li>
             </ul>
           </div>
 
@@ -33,9 +32,9 @@ const Footer = () => {
       <div className="footer-bottom">
         <div className="footer-bottom-inner">
           <p>
-            Defensa de las y los consumidores. Para reclamos <a href="#">ingresá acá</a>.
+            Defensa de las y los consumidores. Para reclamos <a href="#">ingresa aca</a>.
             {' '}/{' '}
-            <a href="#">Botón de arrepentimiento</a>
+            <a href="#">Boton de arrepentimiento</a>
           </p>
         </div>
       </div>

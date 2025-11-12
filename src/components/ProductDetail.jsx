@@ -9,7 +9,7 @@ import './ProductDetail.css';
 const cuotas = 24;
 const descuento = 0.46; // 46% OFF como en el ejemplo
 
-// SVGs de medios de pago (inline para no depender de imágenes externas)
+// SVGs de medios de pago (inline para no depender de imagenes externas)
 const visaSVG = (
   <svg width="38" height="24" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="38" height="24" rx="3" fill="#fff"/><text x="7" y="17" fontSize="13" fontFamily="Arial" fill="#1A1F71">VISA</text></svg>
 );
@@ -51,7 +51,7 @@ const ProductDetail = () => {
         setProduct(foundProduct);
         setNotFound(false);
         
-        // Seleccionar primera variante disponible automáticamente
+        // Seleccionar primera variante disponible automaticamente
         if (foundProduct.variants && foundProduct.variants.length > 0) {
           const firstAvailable = foundProduct.variants.find(
             v => v.available && v.stock > 0
@@ -74,13 +74,13 @@ const ProductDetail = () => {
     return <div className="product-detail-loading">Cargando productos...</div>;
   }
 
-  // Si no hay productos después de cargar
+  // Si no hay productos despues de cargar
   if (products.length === 0) {
     console.log('No hay productos cargados');
     return <div className="product-detail-error">No se pudieron cargar los productos.</div>;
   }
 
-  // Si el producto no se encontró
+  // Si el producto no se encontro
   if (notFound || !product) {
     console.log('Producto no encontrado, ID:', id);
     return <div className="product-detail-error">Producto no encontrado (ID: {id}).</div>;
@@ -106,23 +106,23 @@ const ProductDetail = () => {
   
   const categoria = product.category || product.categoria;
   
-  // La categoría puede ser un objeto { id, name } o un string
+  // La categoria puede ser un objeto { id, name } o un string
   const categoriaNombre = typeof categoria === 'object' && categoria?.name 
     ? categoria.name 
-    : (typeof categoria === 'string' ? categoria : 'CATEGORÍA');
+    : (typeof categoria === 'string' ? categoria : 'CATEGORiA');
 
-  // Cálculo de precios y cuotas
+  // Calculo de precios y cuotas
   const precioOriginal = precio ? (precio / (1 - descuento)).toFixed(2) : null;
   const precioCuota = precio ? (precio / cuotas).toFixed(2) : null;
 
-  // Calcular cantidad ya agregada al carrito de esta variante específica
+  // Calcular cantidad ya agregada al carrito de esta variante especifica
   const cantidadEnCarrito = selectedVariant 
     ? cart.find(item => item.sku === selectedVariant.sku)?.quantity || 0
     : cart.find(item => item.id === product?.id)?.quantity || 0;
     
   const stockDisponible = stock - cantidadEnCarrito;
 
-  // Manejar selección de color (variante)
+  // Manejar seleccion de color (variante)
   const handleVariantSelect = (variant) => {
     console.log('Variante seleccionada:', variant);
     setSelectedVariant(variant);
@@ -155,7 +155,7 @@ const ProductDetail = () => {
     }
     
     if (cantidad > stockDisponible) {
-      alert('No puedes agregar más productos de los que hay en stock disponible');
+      alert('No puedes agregar mas productos de los que hay en stock disponible');
       return;
     }
     
@@ -188,7 +188,7 @@ const ProductDetail = () => {
       </div>
       <div className="product-detail-haversack-info">
         <div className="product-detail-haversack-breadcrumb">
-          INICIO {'>'} PRODUCTOS {'>'} {categoriaNombre?.toUpperCase() || 'CATEGORÍA'} {'>'} {nombre}
+          INICIO {'>'} PRODUCTOS {'>'} {categoriaNombre?.toUpperCase() || 'CATEGORiA'} {'>'} {nombre}
         </div>
         <h1 className="product-detail-haversack-title">{nombre}</h1>
         <div className="product-detail-haversack-prices">
@@ -199,7 +199,7 @@ const ProductDetail = () => {
           <span className="product-detail-haversack-off">46% OFF</span>
         </div>
         <div className="product-detail-haversack-descuento">
-          <span className="product-detail-haversack-descuento-rojo">10% de descuento</span> pagando con Transferencia o depósito
+          <span className="product-detail-haversack-descuento-rojo">10% de descuento</span> pagando con Transferencia o deposito
         </div>
         <div className="product-detail-haversack-cuotas">
           {cuotas} cuotas de <b>${precioCuota}</b>
@@ -239,7 +239,7 @@ const ProductDetail = () => {
               ))}
             </div>
             
-            {/* Información de la variante seleccionada */}
+            {/* Informacion de la variante seleccionada */}
             {selectedVariant && (
               <div className="selected-variant-info">
                 <span className="info-label">Seleccionado:</span>

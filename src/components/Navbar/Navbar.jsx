@@ -25,9 +25,6 @@ const Navbar = () => {
           <NavLink to="/productos" className="navbar__link">
             Productos
           </NavLink>
-          <NavLink to="/contacto" className="navbar__link">
-            Contacto
-          </NavLink>
           {isAuthenticated && isAdmin() && (
             <NavLink to="/admin" className="navbar__link">
               Admin
@@ -55,7 +52,7 @@ const Navbar = () => {
                 {user?.name || user?.email}
               </span>
               <button className="navbar__action" onClick={logout}>
-                CERRAR SESIÓN
+                CERRAR SESIoN
               </button>
             </>
           ) : (

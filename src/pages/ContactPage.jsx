@@ -20,7 +20,7 @@ const ContactPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Aquí puedes agregar la lógica para enviar el formulario
+        // Aqui puedes agregar la logica para enviar el formulario
         console.log('Datos del formulario:', formData);
         setFormData({
             nombre: '',
@@ -28,7 +28,7 @@ const ContactPage = () => {
             telefono: '',
             mensaje: ''
         });
-        alert('Mensaje enviado con éxito!');
+        alert('Mensaje enviado con exito!');
     };
 
     return (
@@ -38,7 +38,7 @@ const ContactPage = () => {
                 <ul className="contact-details">
                     <li><strong>WhatsApp:</strong> <a href="https://wa.me/541151783645" target="_blank" rel="noopener noreferrer">541151783645</a></li>
                     <li><strong>Email:</strong> <a href="mailto:haversack.ventas@gmail.com">haversack.ventas@gmail.com</a></li>
-                    <li><strong>Dirección:</strong> Punta Arenas 1326, La Paternal, CABA</li>
+                    <li><strong>Direccion:</strong> Punta Arenas 1326, La Paternal, CABA</li>
                 </ul>
             </section>
             <section className="contact-form-section">
@@ -68,7 +68,7 @@ const ContactPage = () => {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="telefono">Teléfono</label>
+                        <label htmlFor="telefono">Telefono</label>
                         <input
                             type="tel"
                             id="telefono"
@@ -87,7 +87,7 @@ const ContactPage = () => {
                             value={formData.mensaje}
                             onChange={handleChange}
                             required
-                            placeholder="Escribe tu mensaje aquí..."
+                            placeholder="Escribe tu mensaje aqui..."
                             rows={4}
                         />
                     </div>

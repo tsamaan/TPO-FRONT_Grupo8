@@ -52,7 +52,7 @@ const RegisterForm = ({ onShowLogin }) => {
       <form className="register-form-card" onSubmit={handleSubmit}>
         <div className="register-form-header">
           <div className="register-form-title">Crear cuenta</div>
-          <div className="register-form-subtitle">Únete a nuestra comunidad</div>
+          <div className="register-form-subtitle">unete a nuestra comunidad</div>
         </div>
         
         <div className="register-form-row">
@@ -100,7 +100,7 @@ const RegisterForm = ({ onShowLogin }) => {
         </div>
 
         <div className="register-form-group">
-          <label htmlFor="phone" className="register-form-label">Teléfono</label>
+          <label htmlFor="phone" className="register-form-label">Telefono</label>
           <input 
             id="phone" 
             name="phone" 
@@ -123,7 +123,7 @@ const RegisterForm = ({ onShowLogin }) => {
             className="register-form-input" 
             value={form.password} 
             onChange={handleChange} 
-            placeholder="Mínimo 6 caracteres" 
+            placeholder="Minimo 6 caracteres" 
             required 
             autoComplete="new-password"
           />
@@ -158,13 +158,13 @@ const RegisterForm = ({ onShowLogin }) => {
         </div>
 
         <div className="register-form-bottom">
-          <span>¿Ya tenés cuenta?</span>
+          <span>¿Ya tenes cuenta?</span>
           <button 
             type="button" 
             className="register-form-link" 
             onClick={onShowLogin}
           >
-            Iniciar sesión
+            Iniciar sesion
           </button>
         </div>
 
@@ -172,7 +172,7 @@ const RegisterForm = ({ onShowLogin }) => {
         {error && !localError && <div className="register-form-error">{error}</div>}
       </form>
 
-      {/* Modal de éxito */}
+      {/* Modal de exito */}
       {registrationSuccess && (
         <div className="register-modal-overlay">
           <div className="register-modal">
@@ -180,7 +180,7 @@ const RegisterForm = ({ onShowLogin }) => {
             <h2 className="register-modal-title">¡Registro exitoso!</h2>
             <p className="register-modal-message">
               Tu cuenta ha sido creada correctamente. 
-              Ahora podés iniciar sesión.
+              Ahora podes iniciar sesion.
             </p>
             <button 
               className="register-modal-btn" 

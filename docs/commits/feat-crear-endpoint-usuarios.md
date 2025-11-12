@@ -8,7 +8,7 @@
 
 ## 📋 Resumen
 
-Implementación de endpoints REST específicos para la gestión de usuarios, migrando de JSON Server a Express.js con validación, manejo de errores y respuestas estandarizadas.
+Implementacion de endpoints REST especificos para la gestion de usuarios, migrando de JSON Server a Express.js con validacion, manejo de errores y respuestas estandarizadas.
 
 ---
 
@@ -35,7 +35,7 @@ app.use(express.json({ limit: '10mb' }))
 **Middleware configurado**:
 - **CORS**: Permite requests desde frontend (puerto 5173)
 - **Morgan**: Logging HTTP requests para debugging
-- **Express.json**: Parsing automático de JSON bodies
+- **Express.json**: Parsing automatico de JSON bodies
 
 ### 2. Database Helpers
 
@@ -62,9 +62,9 @@ const writeDB = (data) => {
 ```
 
 **Funcionalidades**:
-- Lectura síncrona del archivo JSON
+- Lectura sincrona del archivo JSON
 - Escritura con formato pretty-print
-- Fallback a estructura vacía en caso de error
+- Fallback a estructura vacia en caso de error
 
 ### 3. Response Helpers
 
@@ -88,9 +88,9 @@ const errorResponse = (res, message = 'Error', statusCode = 500) => {
 
 **Formato estandarizado**:
 - Responses consistentes en toda la API
-- Campo `success` para validación rápida
+- Campo `success` para validacion rapida
 - `message` descriptivo para debugging
-- `data` con información real o `null`
+- `data` con informacion real o `null`
 
 ### 4. Endpoints de Usuarios
 
@@ -132,8 +132,8 @@ app.get('/users/:id', (req, res) => {
 ```
 
 **Funcionalidades**:
-- Validación de ID numérico
-- Búsqueda específica por ID
+- Validacion de ID numerico
+- Busqueda especifica por ID
 - Error 404 si usuario no existe
 - Response con usuario individual
 
@@ -159,32 +159,32 @@ app.get('/users/:id', (req, res) => {
 
 ## 🎯 Funcionalidades Implementadas
 
-### ✅ Gestión de Usuarios
+### ✅ Gestion de Usuarios
 
 **Endpoints disponibles**:
 - `GET /users` - Listar todos los usuarios
-- `GET /users/:id` - Obtener usuario específico por ID
+- `GET /users/:id` - Obtener usuario especifico por ID
 
-**Características**:
-- Validación de parámetros de entrada
+**Caracteristicas**:
+- Validacion de parametros de entrada
 - Manejo robusto de errores
 - Responses en formato JSON estandarizado
-- Logging automático de requests
+- Logging automatico de requests
 
 ### ✅ Arquitectura Backend
 
 **Mejoras vs JSON Server**:
 - Control total sobre responses
-- Validación personalizada
+- Validacion personalizada
 - Logging detallado
-- Error handling específico
+- Error handling especifico
 - Middleware customizable
 
 ---
 
 ## 📊 Estructura de Response
 
-### Éxito - Múltiples usuarios
+### exito - Multiples usuarios
 ```json
 {
   "success": true,
@@ -193,14 +193,14 @@ app.get('/users/:id', (req, res) => {
     {
       "id": 1,
       "email": "juan@example.com",
-      "name": "Juan Pérez",
+      "name": "Juan Perez",
       "address": "Av. Corrientes 1234, Buenos Aires",
       "phone": "+54 11 1234-5678"
     },
     {
       "id": 2,
       "email": "maria@example.com",
-      "name": "María García",
+      "name": "Maria Garcia",
       "address": "Calle Florida 567, Buenos Aires",
       "phone": "+54 11 9876-5432"
     }
@@ -208,7 +208,7 @@ app.get('/users/:id', (req, res) => {
 }
 ```
 
-### Éxito - Usuario específico
+### exito - Usuario especifico
 ```json
 {
   "success": true,
@@ -216,7 +216,7 @@ app.get('/users/:id', (req, res) => {
   "data": {
     "id": 1,
     "email": "juan@example.com",
-    "name": "Juan Pérez",
+    "name": "Juan Perez",
     "address": "Av. Corrientes 1234, Buenos Aires",
     "phone": "+54 11 1234-5678"
   }
@@ -236,37 +236,37 @@ app.get('/users/:id', (req, res) => {
 
 ## 🔍 Validaciones Implementadas
 
-### Validación de ID
+### Validacion de ID
 ```javascript
 const userId = parseInt(req.params.id)
-// Convierte string a número para comparación exacta
+// Convierte string a numero para comparacion exacta
 ```
 
-### Validación de Existencia
+### Validacion de Existencia
 ```javascript
 if (!user) {
   return errorResponse(res, 'User not found', 404)
 }
 ```
 
-### Validación de Base de Datos
+### Validacion de Base de Datos
 ```javascript
 return { products: [], users: [], cart: [] }
-// Fallback si db.json no existe o está corrupto
+// Fallback si db.json no existe o esta corrupto
 ```
 
 ---
 
 ## 🧪 Testing Manual
 
-### Verificación de Endpoints
+### Verificacion de Endpoints
 
 **Obtener todos los usuarios**:
 ```bash
 curl -X GET http://localhost:3001/users
 ```
 
-**Obtener usuario específico**:
+**Obtener usuario especifico**:
 ```bash
 curl -X GET http://localhost:3001/users/1
 ```
@@ -292,30 +292,30 @@ GET /users/999 404 - response time
 - **Control**: Mayor control sobre responses y validaciones
 - **Logging**: Morgan para monitoring de requests
 - **Escalabilidad**: Base para funcionalidades complejas
-- **Debugging**: Error handling más específico
+- **Debugging**: Error handling mas especifico
 
 ### File-based Database
-- **Simplicidad**: Mantiene JSON para desarrollo rápido
+- **Simplicidad**: Mantiene JSON para desarrollo rapido
 - **Persistence**: Cambios se mantienen entre reinicios
-- **Debugging**: Fácil inspección manual de datos
+- **Debugging**: Facil inspeccion manual de datos
 
 ### Response Format
 - **Consistencia**: Mismo formato en toda la API
-- **Frontend**: Fácil manejo desde React con `.data`
-- **Error handling**: Campo `success` para validación
+- **Frontend**: Facil manejo desde React con `.data`
+- **Error handling**: Campo `success` para validacion
 
 ---
 
-## 🔄 Próximos Pasos
+## 🔄 Proximos Pasos
 
 Este endpoint de usuarios habilita:
-1. ✅ Autenticación básica
-2. ✅ Gestión de perfiles
-3. ✅ Asociación con carritos
-4. ✅ Validación en frontend
+1. ✅ Autenticacion basica
+2. ✅ Gestion de perfiles
+3. ✅ Asociacion con carritos
+4. ✅ Validacion en frontend
 5. ✅ CRUD operations completo
 
 ---
 
 **Estado**: ✅ Completado y testeado
-**Impacto**: Establece la base para gestión de usuarios en la aplicación e-commerce.
+**Impacto**: Establece la base para gestion de usuarios en la aplicacion e-commerce.

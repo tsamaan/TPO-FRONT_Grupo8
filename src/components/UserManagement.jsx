@@ -52,7 +52,7 @@ const UserManagement = () => {
   };
 
   const handleDeleteUser = async (userId, userName) => {
-    if (window.confirm(`¿Estás seguro de que quieres eliminar al usuario ${userName}?`)) {
+    if (window.confirm(`¿Estas seguro de que quieres eliminar al usuario ${userName}?`)) {
       try {
         await deleteUser(userId);
         setSuccessMessage('Usuario eliminado correctamente');
@@ -87,7 +87,7 @@ const UserManagement = () => {
   return (
     <div className="user-management">
       <div className="user-management__header">
-        <h2>Gestión de Usuarios</h2>
+        <h2>Gestion de Usuarios</h2>
         <p className="user-management__subtitle">
           Como SUPERADMIN puedes cambiar el rol de cualquier usuario
         </p>

@@ -42,7 +42,7 @@ const AdminDashboard = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar este producto?')) {
+    if (window.confirm('¿Estas seguro de que quieres eliminar este producto?')) {
       try {
         await deleteProduct(id);
         setProducts(products.filter(p => p.id !== id));
@@ -118,7 +118,7 @@ const AdminDashboard = () => {
     <main className="admin-dashboard">
       <div className="admin-dashboard-header">
         <div>
-          <h1>Panel de Administración</h1>
+          <h1>Panel de Administracion</h1>
           <p className="admin-welcome">Bienvenido, {user?.name || user?.email}</p>
           {isSuperAdmin() && <span className="admin-badge">SUPERADMIN</span>}
         </div>
@@ -131,24 +131,24 @@ const AdminDashboard = () => {
               {showRegisterAdmin ? 'Ocultar' : 'Registrar Admin'}
             </button>
           )}
-          <button onClick={logout} className="btn btn--logout">Cerrar Sesión</button>
+          <button onClick={logout} className="btn btn--logout">Cerrar Sesion</button>
         </div>
       </div>
 
-      {/* Tabs de navegación */}
+      {/* Tabs de navegacion */}
       <div className="admin-tabs">
         <button 
           className={`admin-tab ${activeTab === 'products' ? 'admin-tab--active' : ''}`}
           onClick={() => setActiveTab('products')}
         >
-          Gestión de Productos
+          Gestion de Productos
         </button>
         {isSuperAdmin() && (
           <button 
             className={`admin-tab ${activeTab === 'users' ? 'admin-tab--active' : ''}`}
             onClick={() => setActiveTab('users')}
           >
-            Gestión de Usuarios
+            Gestion de Usuarios
           </button>
         )}
       </div>
@@ -209,7 +209,7 @@ const AdminDashboard = () => {
             </div>
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="phone">Teléfono (opcional)</label>
+                <label htmlFor="phone">Telefono (opcional)</label>
                 <input
                   type="tel"
                   id="phone"
@@ -219,7 +219,7 @@ const AdminDashboard = () => {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="address">Dirección (opcional)</label>
+                <label htmlFor="address">Direccion (opcional)</label>
                 <input
                   type="text"
                   id="address"
@@ -236,7 +236,7 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      {/* Contenido según el tab activo */}
+      {/* Contenido segun el tab activo */}
       {activeTab === 'products' ? (
         <>
           {editingProduct ? (
