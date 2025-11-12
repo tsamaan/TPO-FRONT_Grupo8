@@ -141,13 +141,12 @@ export const createProduct = async (productData) => {
 
 export const updateProduct = async (id, productData) => {
   try {
-    console.log('🔄 API: Actualizando producto', { 
-      id, 
+    console.log('🔄 API: Actualizando producto', {
+      id,
       url: `${API_BASE_URL}/products/${id}`,
-      hasVariants: !!productData.variants,
-      variantsCount: productData.variants?.length || 0
+      productData: JSON.stringify(productData, null, 2)
     });
-    
+
     const response = await fetch(`${API_BASE_URL}/products/${id}`, {
       method: 'PUT',
       headers: {
@@ -162,7 +161,14 @@ export const updateProduct = async (id, productData) => {
     if (!response.ok) {
       const errorText = await response.text();
       console.error('❌ Error del servidor:', errorText);
-      throw new Error(`HTTP error! status: ${response.status}`)
+      let errorDetail = errorText;
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorDetail = errorJson.message || errorText;
+      } catch (e) {
+        // No es JSON, usar texto plano
+      }
+      throw new Error(errorDetail || `HTTP error! status: ${response.status}`)
     }
 
     const product = await response.json()

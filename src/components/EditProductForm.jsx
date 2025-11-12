@@ -21,7 +21,14 @@ const EditProductForm = ({ product: productToEdit, onProductUpdated, onCancel })
     const updatedProduct = {
       ...productToEdit,
       images: productToEdit.images || (productToEdit.image ? [productToEdit.image] : []),
-      variants: productToEdit.variants || []
+      variants: productToEdit.variants || [],
+      // FIX: Extraer category name e id del objeto Category
+      categoryName: typeof productToEdit.category === 'object'
+        ? productToEdit.category?.name
+        : productToEdit.category,
+      categoryId: typeof productToEdit.category === 'object'
+        ? productToEdit.category?.id
+        : null
     };
     setProduct(updatedProduct);
   }, [productToEdit]);
@@ -106,17 +113,47 @@ const EditProductForm = ({ product: productToEdit, onProductUpdated, onCancel })
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Debug: Verificar el ID y los datos del producto
-    console.log('📦 Actualizando producto:', {
+
+    // Preparar el DTO con los campos correctos para el backend
+    const productDTO = {
       id: product.id,
       name: product.name,
-      variantsCount: product.variants?.length || 0,
-      variants: product.variants
-    });
-    
+      description: product.description,
+      price: parseFloat(product.price),
+      image: product.image || null,
+      images: product.images || [],
+      tags: product.tags || [],
+      // FIX: Enviar categoryName explícitamente (no enviar categoryId si es null)
+      categoryName: product.categoryName,
+      // FIX: Asegurar que variantes incluyan sus IDs para matching correcto
+      variants: (product.variants || []).map(v => ({
+        id: v.id || null,
+        sku: v.sku,
+        color: v.color || '',
+        size: v.size || null,
+        stock: parseInt(v.stock) || 0,
+        priceModifier: parseFloat(v.priceModifier) || 0,
+        imageUrl: v.imageUrl || null,
+        available: v.available !== undefined ? v.available : true
+      }))
+    };
+
+    // Agregar categoryId solo si existe y es válido
+    if (product.categoryId && product.categoryId !== null) {
+      productDTO.categoryId = product.categoryId;
+    }
+
+    console.log('📦 Actualizando producto:', JSON.stringify({
+      id: productDTO.id,
+      name: productDTO.name,
+      categoryName: productDTO.categoryName,
+      categoryId: productDTO.categoryId,
+      variantsCount: productDTO.variants.length,
+      variants: productDTO.variants
+    }, null, 2));
+
     try {
-      await updateProduct(product.id, product);
+      await updateProduct(productDTO.id, productDTO);
       alert('Producto actualizado con éxito');
       onProductUpdated();
     } catch (error) {
@@ -164,7 +201,27 @@ const EditProductForm = ({ product: productToEdit, onProductUpdated, onCancel })
       </div>
 
       <div className="form-group">
-        <label htmlFor="images">Imágenes (URLs)</label>
+        <label htmlFor="image">Imagen Principal (URL)</label>
+        <input
+          type="text"
+          id="image"
+          name="image"
+          value={product.image || ''}
+          onChange={handleChange}
+          placeholder="URL de la imagen principal del producto"
+        />
+        <small className="form-hint">
+          Esta será la imagen por defecto. Si está vacía, se usará la primera de la galería.
+        </small>
+        {product.image && (
+          <div className="image-preview-single" style={{marginTop: '10px'}}>
+            <img src={product.image} alt="Imagen principal" style={{maxWidth: '150px', height: 'auto', border: '2px solid #007bff', borderRadius: '4px'}} />
+          </div>
+        )}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="images">Galería de Imágenes (URLs)</label>
         <div className="image-url-group">
           <input
             type="text"
@@ -208,15 +265,17 @@ const EditProductForm = ({ product: productToEdit, onProductUpdated, onCancel })
       </div>
 
       <div className="form-group">
-        <label htmlFor="category">Categoría</label>
+        <label htmlFor="categoryName">Categoría</label>
         <input
           type="text"
-          id="category"
-          name="category"
-          value={product.category}
+          id="categoryName"
+          name="categoryName"
+          value={product.categoryName || ''}
           onChange={handleChange}
           required
+          placeholder="Ej: mochilas, bolsos, materos"
         />
+        <small className="form-hint">Nombre de la categoría (debe existir en el sistema)</small>
       </div>
 
       <div className="form-group">
@@ -389,7 +448,15 @@ const EditProductForm = ({ product: productToEdit, onProductUpdated, onCancel })
                         value={variant.sku}
                         onChange={(e) => updateVariant(index, 'sku', e.target.value)}
                         className="inline-edit"
-                        style={{ width: '120px', fontFamily: 'monospace', fontSize: '0.9rem' }}
+                        readOnly={variant.id !== undefined}
+                        style={{
+                          width: '120px',
+                          fontFamily: 'monospace',
+                          fontSize: '0.9rem',
+                          backgroundColor: variant.id ? '#f5f5f5' : 'white',
+                          cursor: variant.id ? 'not-allowed' : 'text'
+                        }}
+                        title={variant.id ? 'SKU no editable en variantes existentes' : 'SKU editable para nuevas variantes'}
                       />
                     </td>
                     <td>

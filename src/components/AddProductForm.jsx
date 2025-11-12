@@ -6,9 +6,10 @@ const AddProductForm = ({ onProductAdded }) => {
   const [product, setProduct] = useState({
     name: '',
     description: '',
+    image: '', // Imagen principal
     images: [],
     price: 0,
-    category: '',
+    categoryName: '', // Usar categoryName en lugar de category
     tags: [],
     variants: [] // Array de variantes con color, stock, SKU, etc.
   });
@@ -33,10 +34,12 @@ const AddProductForm = ({ onProductAdded }) => {
       if (!product.name) newErrors.name = 'El nombre es obligatorio.';
       if (!product.description) newErrors.description = 'La descripción es obligatoria.';
       if (product.price <= 0) newErrors.price = 'El precio debe ser mayor que cero.';
-      if (!product.category) newErrors.category = 'La categoría es obligatoria.';
-      if (!product.images || product.images.length === 0) newErrors.images = 'Debe agregar al menos una imagen.';
+      if (!product.categoryName) newErrors.categoryName = 'La categoría es obligatoria.';
+      if ((!product.image || !product.image.trim()) && (!product.images || product.images.length === 0)) {
+        newErrors.images = 'Debe agregar al menos una imagen (principal o en galería).';
+      }
       if (!product.variants || product.variants.length === 0) newErrors.variants = 'Debe agregar al menos una variante (color/stock).';
-      
+
       setErrors(newErrors);
     };
 
@@ -116,9 +119,10 @@ const AddProductForm = ({ onProductAdded }) => {
         setProduct({
           name: '',
           description: '',
+          image: '',
           images: [],
           price: 0,
-          category: '',
+          categoryName: '',
           tags: [],
           variants: []
         });
@@ -175,7 +179,27 @@ const AddProductForm = ({ onProductAdded }) => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="images">Imágenes (URLs)</label>
+        <label htmlFor="image">Imagen Principal (URL)</label>
+        <input
+          type="text"
+          id="image"
+          name="image"
+          value={product.image}
+          onChange={handleChange}
+          placeholder="URL de la imagen principal del producto"
+        />
+        <small className="form-hint">
+          Esta será la imagen por defecto. Si está vacía, se usará la primera de la galería.
+        </small>
+        {product.image && (
+          <div className="image-preview-single" style={{marginTop: '10px'}}>
+            <img src={product.image} alt="Imagen principal" style={{maxWidth: '150px', height: 'auto', border: '2px solid #007bff', borderRadius: '4px'}} />
+          </div>
+        )}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="images">Galería de Imágenes (URLs)</label>
         <div className="image-url-group">
           <input
             type="text"
@@ -220,15 +244,17 @@ const AddProductForm = ({ onProductAdded }) => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="category">Categoría</label>
+        <label htmlFor="categoryName">Categoría</label>
         <input
           type="text"
-          id="category"
-          name="category"
-          value={product.category}
+          id="categoryName"
+          name="categoryName"
+          value={product.categoryName}
           onChange={handleChange}
+          placeholder="Ej: mochilas, bolsos, materos"
         />
-        {errors.category && <p className="error">{errors.category}</p>}
+        <small className="form-hint">Nombre de la categoría (debe existir en el sistema)</small>
+        {errors.categoryName && <p className="error">{errors.categoryName}</p>}
       </div>
 
       <div className="form-group">
