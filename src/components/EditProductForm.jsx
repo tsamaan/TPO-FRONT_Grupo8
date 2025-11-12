@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { updateProduct } from '../services/api';
+import { getColorHex, colorMap } from '../utils/colorUtils';
 import './AddProductForm.css'; // Usando estilos compartidos
 
 const EditProductForm = ({ product: productToEdit, onProductUpdated, onCancel }) => {
@@ -298,14 +299,38 @@ const EditProductForm = ({ product: productToEdit, onProductUpdated, onCancel })
           <div className="variant-row">
             <div className="variant-field">
               <label htmlFor="variant-color">Color *</label>
-              <input
-                type="text"
-                id="variant-color"
-                name="color"
-                placeholder="Ej: Rojo, Azul, Negro"
-                value={currentVariant.color}
-                onChange={handleVariantChange}
-              />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {/* Círculo de vista previa */}
+                {currentVariant.color && (
+                  <div
+                    style={{
+                      width: '30px',
+                      height: '30px',
+                      backgroundColor: getColorHex(currentVariant.color),
+                      border: '2px solid #ddd',
+                      borderRadius: '50%',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                      flexShrink: 0
+                    }}
+                    title={currentVariant.color}
+                  />
+                )}
+                {/* Selector de color */}
+                <select
+                  id="variant-color"
+                  name="color"
+                  value={currentVariant.color}
+                  onChange={handleVariantChange}
+                  style={{ flex: 1 }}
+                >
+                  <option value="">Seleccionar color...</option>
+                  {Object.keys(colorMap).map(colorName => (
+                    <option key={colorName} value={colorName}>
+                      {colorName}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
             
             <div className="variant-field">
@@ -399,24 +424,47 @@ const EditProductForm = ({ product: productToEdit, onProductUpdated, onCancel })
                 </tr>
               </thead>
               <tbody>
-                {product.variants.map((variant, index) => (
-                  <tr key={index}>
-                    <td>
-                      <input
-                        type="text"
-                        value={variant.color}
-                        onChange={(e) => updateVariant(index, 'color', e.target.value)}
-                        className="inline-edit"
-                        style={{
-                          backgroundColor: variant.color.toLowerCase(),
-                          color: '#fff',
-                          fontWeight: 'bold',
-                          padding: '4px 8px',
-                          border: '1px solid #ddd',
-                          borderRadius: '4px'
-                        }}
-                      />
-                    </td>
+                {product.variants.map((variant, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          {/* Círculo de color visual */}
+                          <div
+                            style={{
+                              width: '24px',
+                              height: '24px',
+                              backgroundColor: getColorHex(variant.color),
+                              border: '2px solid #ccc',
+                              borderRadius: '50%',
+                              flexShrink: 0,
+                              cursor: 'pointer'
+                            }}
+                            title={variant.color}
+                          />
+                          {/* Selector de color */}
+                          <select
+                            value={variant.color || ''}
+                            onChange={(e) => updateVariant(index, 'color', e.target.value)}
+                            style={{
+                              width: '110px',
+                              padding: '4px 6px',
+                              border: '1px solid #ddd',
+                              borderRadius: '4px',
+                              fontSize: '0.875rem',
+                              cursor: 'pointer',
+                              backgroundColor: 'white'
+                            }}
+                          >
+                            <option value="">Seleccionar...</option>
+                            {Object.keys(colorMap).map(colorName => (
+                              <option key={colorName} value={colorName}>
+                                {colorName}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </td>
                     <td>
                       <input
                         type="text"
@@ -487,7 +535,8 @@ const EditProductForm = ({ product: productToEdit, onProductUpdated, onCancel })
                       </button>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
             <div className="variants-summary">
