@@ -33,7 +33,7 @@ const Navbar = () => {
               Admin
             </NavLink>
           )}
-          {isAuthenticated && !isAdmin() && (
+          {isAuthenticated && (
             <>
               <NavLink to="/perfil" className="navbar__link">
                 Mi Perfil
